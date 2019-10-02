@@ -1,0 +1,78 @@
+{
+  "name": "nodecore-js",
+  "version": "1.0.1",
+  "description": "JavaScript libraries for veriblock nodecore repo.",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeriBlock/nodecore-js.git"
+  },
+  "keywords": [
+    "js",
+    "nodecore",
+    "veriblock",
+    "wallet",
+    "browser",
+    "lib"
+  ],
+  "author": "j0k",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VeriBlock/nodecore-js/issues"
+  },
+  "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
+  "directories": {
+    "test": "./test"
+  },
+  "dependencies": {
+    "asn1": "^0.2.4",
+    "asn1.js": "^5.2.0",
+    "b58": "^4.0.3",
+    "bs58": "^4.0.1",
+    "elliptic": "^6.5.1",
+    "fast-sha256": "^1.1.0",
+    "json-rpc-client": "^0.2.2",
+    "secp256k1": "^3.7.1"
+  },
+  "devDependencies": {
+    "@types/asn1": "^0.2.0",
+    "@types/bs58": "^4.0.0",
+    "@types/elliptic": "^6.4.10",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^10.0.3",
+    "@types/secp256k1": "^3.5.0",
+    "gts": "^1.1.0",
+    "jest": "^24.9.0",
+    "prettier": "1.18.2",
+    "ts-jest": "^24.1.0",
+    "ts-loader": "^6.2.0",
+    "tslint": "^5.20.0",
+    "typescript": "~3.5.0"
+  }
+}
