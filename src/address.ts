@@ -8,12 +8,8 @@ import {
   STARTING_CHAR,
 } from './const';
 import { sha256 } from './hash';
-import { toBase58 } from './converter';
 import { InvalidChecksumException } from './exception';
-
-export class Address {
-  constructor(private hash: string, private pubkey: PublicKey) {}
-}
+import base58 = require('bs58');
 
 const getDataPortionFromAddress = (address: string): string => {
   return address.substr(ADDRESS_DATA_START, ADDRESS_DATA_END + 1);
@@ -30,12 +26,12 @@ const chopChecksumStandard = (checksum: string): string => {
   return checksum.substr(0, ADDRESS_CHECKSUM_LENGTH + 1);
 };
 
-export const isAddressValid = (address?: string): boolean => {
+export const isAddressValid = (address: string | null | undefined): boolean => {
   if (!address) {
     return false;
   }
 
-  if (address.length !== ADDRESS_LENGTH) {
+  if (address!.length !== ADDRESS_LENGTH) {
     return false;
   }
 
@@ -45,7 +41,23 @@ export const isAddressValid = (address?: string): boolean => {
 
   const sub: string = getDataPortionFromAddress(address);
   const hash: Buffer = sha256(Buffer.from(sub));
-  const b58: string = toBase58(hash);
+  const b58: string = base58.encode(hash);
 
   return chopChecksumStandard(b58) === getChecksumPortionFromAddress(address);
+};
+
+export const addressFromPublicKey = (publicKey: PublicKey | Buffer): string => {
+  if (publicKey instanceof Buffer) {
+    publicKey = new PublicKey(publicKey);
+  }
+
+  const b58 = base58.encode(sha256(publicKey.asn1));
+  const slice = b58.slice(ADDRESS_DATA_START, ADDRESS_DATA_END);
+  const address = STARTING_CHAR + slice;
+
+  const checksum = chopChecksumStandard(
+    base58.encode(sha256(Buffer.from(address)))
+  );
+
+  return address + checksum;
 };

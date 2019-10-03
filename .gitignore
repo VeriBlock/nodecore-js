@@ -2,3 +2,5 @@ dist
 .idea
 node_modules
 tsconfig.tsbuildinfo
+coverage
+yarn-error.log
