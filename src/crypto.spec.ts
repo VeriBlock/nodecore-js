@@ -84,15 +84,15 @@ describe('keygen', () => {
   });
 
   it('two consecutive keypair generations create different keypairs', () => {
-    const k1 = SHA256withECDSA.generateKeypair();
-    const k2 = SHA256withECDSA.generateKeypair();
+    const k1 = KeyPair.generate();
+    const k2 = KeyPair.generate();
     expect(k1).not.toEqual(k2);
   });
 
   it('two consecutive keypair generations with same seed crete sam keypairs', () => {
     const seed = sha256(Buffer.from('hi there'));
-    const k1 = SHA256withECDSA.generateKeypair(seed);
-    const k2 = SHA256withECDSA.generateKeypair(seed);
+    const k1 = KeyPair.generate(seed);
+    const k2 = KeyPair.generate(seed);
     expect(k1).toEqual(k2);
   });
 });
