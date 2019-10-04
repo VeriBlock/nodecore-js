@@ -1,3 +1,11 @@
+// VeriBlock Blockchain Project
+// Copyright 2017-2018 VeriBlock, Inc
+// Copyright 2018-2019 Xenios SEZC
+// All rights reserved.
+// https://www.veriblock.org
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
 import { PublicKey } from './crypto';
 import {
   ADDRESS_CHECKSUM_LENGTH,
@@ -144,31 +152,38 @@ export const addressFromPublicKey = (publicKey: PublicKey | Buffer): string => {
 };
 
 export class Address {
-  readonly addressType: Type | undefined;
-
+  readonly type: Type;
   constructor(readonly value: string) {
-    if (!this.addressType && isValidStandardAddress(value)) {
-      this.addressType = Type.STANDARD;
+    if (isValidStandardAddress(value)) {
+      this.type = Type.STANDARD;
+      return;
     }
 
-    if (!this.addressType && isValidMultisigAddress(value)) {
-      this.addressType = Type.MULTISIG;
+    if (isValidMultisigAddress(value)) {
+      this.type = Type.MULTISIG;
+      return;
     }
 
-    if (!this.addressType) {
-      throw new Error('invalid address');
+    throw new Error('invalid address');
+  }
+
+  static fromPublicKey(publicKey: PublicKey | Buffer): Address {
+    if (publicKey instanceof Buffer) {
+      publicKey = new PublicKey(publicKey);
     }
+
+    return new Address(publicKey.address);
   }
 
   write(b: WritableStreamBuffer) {
     let bytes: Buffer;
-    switch (this.addressType) {
+    switch (this.type) {
       case Type.MULTISIG:
-        b.write(MULTISIG_ADDRESS_ID);
+        b.write(Buffer.from([MULTISIG_ADDRESS_ID]));
         bytes = Base59.decode(this.value);
         break;
       case Type.STANDARD:
-        b.write(STANDARD_ADDRESS_ID);
+        b.write(Buffer.from([STANDARD_ADDRESS_ID]));
         bytes = Base58.decode(this.value);
         break;
       default:
@@ -179,3 +194,13 @@ export class Address {
     writeBuffer(b, bytes);
   }
 }
+
+export type AddressLike = Address | string;
+
+export const addressLikeToAddress = (addressLike: AddressLike): Address => {
+  if (addressLike instanceof Address) {
+    return addressLike;
+  } else {
+    return new Address(addressLike);
+  }
+};

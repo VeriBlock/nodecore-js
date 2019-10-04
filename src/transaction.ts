@@ -1,19 +1,22 @@
-import {
-  Address,
-  isValidMultisigAddress,
-  isValidStandardAddress,
-} from './address';
+// VeriBlock Blockchain Project
+// Copyright 2017-2018 VeriBlock, Inc
+// Copyright 2018-2019 Xenios SEZC
+// All rights reserved.
+// https://www.veriblock.org
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
+import { Address, AddressLike, addressLikeToAddress } from './address';
 import {
   assertInt,
   assertMaxNumber,
   assertNumberInRange,
   assertPositive,
-  assertTrue,
   serializeTransactionEffects,
 } from './util';
 import { sha256 } from './hash';
-import { KeyPair, PublicKey, SHA256withECDSA } from './crypto';
-import { Amount } from './amount';
+import { KeyPair, PublicKey, SHA256withECDSA, Signature } from './crypto';
+import { Amount, AmountLike, amountLikeToAmount } from './amount';
 import { Output } from './basic';
 
 export enum Type {
@@ -24,10 +27,13 @@ export enum Type {
 }
 
 export class Transaction {
+  private _address: Address;
+  private _amount: Amount;
+
   constructor(
     readonly type: Type,
-    readonly sourceAddress: Address,
-    readonly sourceAmount: Amount,
+    sourceAddress: AddressLike,
+    sourceAmount: AmountLike,
     readonly outputs: Output[],
     readonly networkByte: number
   ) {
@@ -35,19 +41,23 @@ export class Transaction {
     assertNumberInRange(type, 0, 3);
 
     // check address
-    assertTrue(
-      isValidStandardAddress(sourceAddress.value) ||
-        isValidMultisigAddress(sourceAddress.value),
-      'sourceAddress is neither standard nor multisig'
-    );
+    this._address = addressLikeToAddress(sourceAddress);
 
     // check amount
-    assertPositive(sourceAmount.value.toNumber(), 'sourceAmount');
+    this._amount = amountLikeToAmount(sourceAmount);
 
     // check networkByte
     assertPositive(networkByte, 'networkByte');
     assertInt(networkByte, 'networkByte');
     assertMaxNumber(networkByte, 0xff, 'networkByte');
+  }
+
+  get sourceAddress(): Address {
+    return this._address;
+  }
+
+  get sourceAmount(): Amount {
+    return this._amount;
   }
 }
 
@@ -61,7 +71,7 @@ export const getTransactionId = (
 
 export class SignedTransaction {
   constructor(
-    readonly signature: Buffer,
+    readonly signature: Signature,
     readonly publicKey: PublicKey,
     readonly signatureIndex: number,
     readonly transaction: Transaction

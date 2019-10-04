@@ -1,18 +1,30 @@
+// VeriBlock Blockchain Project
+// Copyright 2017-2018 VeriBlock, Inc
+// Copyright 2018-2019 Xenios SEZC
+// All rights reserved.
+// https://www.veriblock.org
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
 import secp256k1 from 'secp256k1';
 import { sha256 } from './hash';
 import { randomBytes } from 'crypto';
+import { addressFromPublicKey } from './address';
 
-// prefix which you need to add to an uncompressed public key to get java-like public key
+// prefix which you need to add to an uncompressed public key to get asn1 (java-like) public key
 export const PUBKEY_ASN1_PREFIX = Buffer.from(
   '3056301006072A8648CE3D020106052B8104000A034200',
   'hex'
 );
 
-// prefix which you need to add to a private key to get java-like private key
+// prefix which you need to add to a private key to get asn1 (java-like) private key
 export const PRIVKEY_ASN1_PREFIX = Buffer.from(
   '303E020100301006072A8648CE3D020106052B8104000A042730250201010420',
   'hex'
 );
+
+// prefix which you need to add to a signature to get asn1 encoded signature
+export const SIGNATURE_ASN1_PREFIX = Buffer.from('304502204348CE', 'hex');
 
 export class PublicKey {
   // stores asn1 encoded public key as [pubkey asn1 prefix + 0x04 + x + y]
@@ -64,6 +76,10 @@ export class PublicKey {
   get asn1(): Buffer {
     return this._full;
   }
+
+  get address(): string {
+    return addressFromPublicKey(this);
+  }
 }
 
 export class PrivateKey {
@@ -100,10 +116,41 @@ export class PrivateKey {
   }
 }
 
+export class Signature {
+  private readonly _full: Buffer;
+
+  constructor(buffer: Buffer) {
+    if (buffer.length === 64) {
+      // it is plain signature
+      this._full = Buffer.concat([SIGNATURE_ASN1_PREFIX, buffer]);
+    } else if (
+      buffer.length === 71 &&
+      buffer
+        .slice(0, SIGNATURE_ASN1_PREFIX.length)
+        .compare(SIGNATURE_ASN1_PREFIX) === 0
+    ) {
+      // this is full asn1 encoded signature
+      this._full = buffer;
+    } else {
+      throw new Error('unknown signature format');
+    }
+  }
+
+  /// returns full asn1 encoded signature of length 71 bytes
+  get asn1(): Buffer {
+    return this._full;
+  }
+
+  /// returns canonical secp256k1 signature with length 64 bytes
+  get canonical(): Buffer {
+    return this._full.slice(this._full.length - 64);
+  }
+}
+
 export class KeyPair {
   constructor(readonly publicKey: PublicKey, readonly privateKey: PrivateKey) {}
 
-  static fromPrivate(privateKey: PrivateKey | Buffer) {
+  static fromPrivateKey(privateKey: PrivateKey | Buffer) {
     if (privateKey instanceof Buffer) {
       privateKey = new PrivateKey(privateKey);
     }
@@ -129,25 +176,25 @@ export class KeyPair {
 }
 
 export class SHA256withECDSA {
-  static sign(msg: Buffer, privateKey: PrivateKey | KeyPair): Buffer {
+  static sign(msg: Buffer, privateKey: PrivateKey | KeyPair): Signature {
     if (privateKey instanceof KeyPair) {
       privateKey = privateKey.privateKey;
     }
 
     const m = sha256(msg);
     const sig = secp256k1.sign(m, privateKey.canonical);
-    return sig.signature;
+    return new Signature(sig.signature);
   }
 
   static verify(
     msg: Buffer,
-    sig: Buffer,
+    sig: Signature,
     publicKey: PublicKey | KeyPair
   ): boolean {
     if (publicKey instanceof KeyPair) {
       publicKey = publicKey.publicKey;
     }
     const m = sha256(msg);
-    return secp256k1.verify(m, sig, publicKey.uncompressed);
+    return secp256k1.verify(m, sig.canonical, publicKey.uncompressed);
   }
 }

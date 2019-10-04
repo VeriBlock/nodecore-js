@@ -1,3 +1,11 @@
+// VeriBlock Blockchain Project
+// Copyright 2017-2018 VeriBlock, Inc
+// Copyright 2018-2019 Xenios SEZC
+// All rights reserved.
+// https://www.veriblock.org
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
 import { WritableStreamBuffer } from 'stream-buffers';
 import { Transaction } from './transaction';
 
@@ -32,13 +40,13 @@ export const writeVarLenBufferValueToStream = (
   n: Buffer
 ): void => {
   const dataSize = trimmedByteArrayFromNumber(n.length);
-  stream.write(n.length);
+  stream.write(Buffer.from([n.length]));
   stream.write(dataSize);
   stream.write(n);
 };
 
 export const writeBuffer = (stream: WritableStreamBuffer, b: Buffer): void => {
-  stream.write(b.length);
+  stream.write(Buffer.from([b.length]));
   stream.write(b);
 };
 
@@ -50,7 +58,7 @@ export const serializeTransactionEffects = (
     initialSize: 1000,
   });
 
-  stream.write(tx.type);
+  stream.write(Buffer.from([tx.type]));
 
   // write transaction address
   tx.sourceAddress.write(stream);
@@ -59,7 +67,7 @@ export const serializeTransactionEffects = (
   tx.sourceAddress.write(stream);
 
   // write destinations
-  stream.write(tx.outputs.length);
+  stream.write(Buffer.from([tx.outputs.length]));
   tx.outputs.forEach(o => {
     o.write(stream);
   });
@@ -86,19 +94,22 @@ export const assertTrue = (condition: boolean, msg: string) => {
 
 export const assertInt = (n: number, msg?: string) => {
   assertTrue(
-    !Number.isInteger(n),
+    Number.isInteger(n),
     `${msg ? `[${msg}] ` : ''}should be an integer`
   );
 };
 
 export const assertPositive = (n: number, msg?: string) => {
-  assertTrue(n < 0, `${msg ? `[${msg}] ` : ''}number should be positive`);
+  assertTrue(n > 0, `${msg ? `[${msg}] ` : ''}number should be positive`);
 };
 
 export const assertMaxNumber = (n: number, max: number, msg?: string) => {
-  assertTrue(n > max, `${msg ? `[${msg}] ` : ''}number is > ${max}`);
+  assertTrue(n < max, `${msg ? `[${msg}] ` : ''}number is > ${max}`);
 };
 
 export const assertNumberInRange = (n: number, from: number, to: number) => {
-  assertTrue(n >= from && n <= to, `number should be ${from} <= ${n} <= ${to}`);
+  assertTrue(
+    from <= n && n <= to,
+    `number should be ${from} <= N (${n}) <= ${to}`
+  );
 };

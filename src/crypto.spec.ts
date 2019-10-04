@@ -1,4 +1,18 @@
-import { KeyPair, PrivateKey, PublicKey, SHA256withECDSA } from './crypto';
+// VeriBlock Blockchain Project
+// Copyright 2017-2018 VeriBlock, Inc
+// Copyright 2018-2019 Xenios SEZC
+// All rights reserved.
+// https://www.veriblock.org
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
+import {
+  KeyPair,
+  PrivateKey,
+  PublicKey,
+  SHA256withECDSA,
+  Signature,
+} from './crypto';
 import { sha256 } from './hash';
 
 const ASN1_PUBLIC_KEY =
@@ -98,8 +112,8 @@ describe('keygen', () => {
 });
 
 describe('signature works', () => {
-  it('sign/verify', () => {
-    const kp = KeyPair.fromPrivate(
+  it('sign/verify js', () => {
+    const kp = KeyPair.fromPrivateKey(
       Buffer.from(
         '303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F',
         'hex'
@@ -114,8 +128,31 @@ describe('signature works', () => {
     expect(result).toEqual(true);
   });
 
+  it('verify signature from java', () => {
+    const kp = KeyPair.fromPrivateKey(
+      Buffer.from(
+        '303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F',
+        'hex'
+      )
+    );
+
+    const sigbuf = Buffer.from(
+      '3045022100A09A4374161134803B05A65E0EC3BB63CEBDFBD563436842FB08DB62C1232C2F02201DF9472377071BC7A7122C67C45DF35F346401F19F66BF93FF8829B66FBB4BF8',
+      'hex'
+    );
+
+    const msg = Buffer.from(
+      '4cb778a158601701c98028b778e583859ef814ba1a57284fadef720a1dd5fbb7',
+      'hex'
+    );
+
+    const sig = new Signature(sigbuf);
+    const result: boolean = SHA256withECDSA.verify(msg, sig, kp);
+    expect(result).toEqual(true);
+  });
+
   it('sign produces deterministic signatures', () => {
-    const kp = KeyPair.fromPrivate(
+    const kp = KeyPair.fromPrivateKey(
       Buffer.from(
         '303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F',
         'hex'
