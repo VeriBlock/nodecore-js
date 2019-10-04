@@ -1,9 +1,9 @@
-import { addressFromPublicKey, isAddressValid } from './address';
+import { addressFromPublicKey, isValidStandardAddress } from './address';
 import { PublicKey } from './crypto';
 
 test('valid address is valid', () => {
   const validAddress = 'V44i36pPHyhaiW695Xg8PEos4G2PrC';
-  const val = isAddressValid(validAddress);
+  const val = isValidStandardAddress(validAddress);
   expect(val).toEqual(true);
 });
 
@@ -17,23 +17,25 @@ test('valid address from public key', () => {
   const address1 = addressFromPublicKey(pub);
   const address2 = addressFromPublicKey(new PublicKey(pub));
 
-  expect(isAddressValid(addressExpected)).toEqual(true);
-  expect(isAddressValid(address1)).toEqual(true);
-  expect(isAddressValid(address2)).toEqual(true);
+  expect(isValidStandardAddress(addressExpected)).toEqual(true);
+  expect(isValidStandardAddress(address1)).toEqual(true);
+  expect(isValidStandardAddress(address2)).toEqual(true);
   expect(address1).toEqual(addressExpected);
   expect(address1).toEqual(address2);
 });
 
 describe('invalid address is invalid', () => {
   it('is null', () => {
-    expect(isAddressValid(null)).toEqual(false);
+    expect(isValidStandardAddress(null)).toEqual(false);
   });
 
   it('too short', () => {
-    expect(isAddressValid('VVV')).toEqual(false);
+    expect(isValidStandardAddress('VVV')).toEqual(false);
   });
 
   it('no starting char', () => {
-    expect(isAddressValid('Z5ZguGxnAckADJMkFFG6Vpr9EGyk6v')).toEqual(false);
+    expect(isValidStandardAddress('Z5ZguGxnAckADJMkFFG6Vpr9EGyk6v')).toEqual(
+      false
+    );
   });
 });

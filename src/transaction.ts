@@ -1,4 +1,20 @@
-import { InvalidUnionTypeException } from './exception';
+import {
+  Address,
+  isValidMultisigAddress,
+  isValidStandardAddress,
+} from './address';
+import {
+  assertInt,
+  assertMaxNumber,
+  assertNumberInRange,
+  assertPositive,
+  assertTrue,
+  serializeTransactionEffects,
+} from './util';
+import { sha256 } from './hash';
+import { KeyPair, PublicKey, SHA256withECDSA } from './crypto';
+import { Amount } from './amount';
+import { Output } from './basic';
 
 export enum Type {
   ZERO_UNUSED = 0,
@@ -7,103 +23,57 @@ export enum Type {
   MULTISIG = 3,
 }
 
-export class Output {
-  address?: string;
-  amount?: number;
-}
-
-class BitcoinBlockHeader {
-  header?: string;
-}
-
 export class Transaction {
-  type?: Type;
-  sourceAddress?: string;
-  sourceAmount?: number;
-  outputs?: Output[];
-  transactionFee?: number;
-  data?: string;
-  bitcoinTransaction?: string;
-  endorsedBlockHeader?: string;
-  bitcoinBlockHeaderOfProof?: BitcoinBlockHeader;
-  merklePath?: string;
-  contextBitcoinBlockHeaders?: BitcoinBlockHeader[];
-  timestamp?: number;
-  size?: number;
-  txid?: string;
+  constructor(
+    readonly type: Type,
+    readonly sourceAddress: Address,
+    readonly sourceAmount: Amount,
+    readonly outputs: Output[],
+    readonly networkByte: number
+  ) {
+    // check type
+    assertNumberInRange(type, 0, 3);
+
+    // check address
+    assertTrue(
+      isValidStandardAddress(sourceAddress.value) ||
+        isValidMultisigAddress(sourceAddress.value),
+      'sourceAddress is neither standard nor multisig'
+    );
+
+    // check amount
+    assertPositive(sourceAmount.value.toNumber(), 'sourceAmount');
+
+    // check networkByte
+    assertPositive(networkByte, 'networkByte');
+    assertInt(networkByte, 'networkByte');
+    assertMaxNumber(networkByte, 0xff, 'networkByte');
+  }
 }
+
+export const getTransactionId = (
+  tx: Transaction,
+  signatureIndex: number
+): Buffer => {
+  const ser = serializeTransactionEffects(tx, signatureIndex);
+  return sha256(ser);
+};
 
 export class SignedTransaction {
-  signature?: string;
-  publicKey?: string;
-  signatureIndex?: number;
-  transaction?: Transaction;
+  constructor(
+    readonly signature: Buffer,
+    readonly publicKey: PublicKey,
+    readonly signatureIndex: number,
+    readonly transaction: Transaction
+  ) {}
 }
 
-export class SignedMultisigTransaction {
-  // TODO: add fields
-}
-
-// union of types
-export class TransactionUnion {
-  private _unsigned?: Transaction;
-  private _signed?: SignedTransaction;
-  private _signedMultisig?: SignedMultisigTransaction;
-
-  isUnsigned(): boolean {
-    return !!this._unsigned;
-  }
-
-  isSigned(): boolean {
-    return !!this._signed;
-  }
-
-  isSignedMultisig(): boolean {
-    return !!this._signedMultisig;
-  }
-
-  set unsigned(t: Transaction) {
-    this.clear();
-    this._unsigned = t;
-  }
-
-  set signed(t: SignedTransaction) {
-    this.clear();
-    this._signed = t;
-  }
-
-  set signedMultisig(t: SignedMultisigTransaction) {
-    this.clear();
-    this._signedMultisig = t;
-  }
-
-  get unsigned(): Transaction {
-    if (!this._unsigned) {
-      throw new InvalidUnionTypeException();
-    }
-
-    return this._unsigned;
-  }
-
-  get signed(): SignedTransaction {
-    if (!this._signed) {
-      throw new InvalidUnionTypeException();
-    }
-
-    return this._signed;
-  }
-
-  get signedMultisigTransaction(): SignedMultisigTransaction {
-    if (!this._signedMultisig) {
-      throw new InvalidUnionTypeException();
-    }
-
-    return this._signedMultisig;
-  }
-
-  private clear() {
-    this._signed = undefined;
-    this._signedMultisig = undefined;
-    this._unsigned = undefined;
-  }
-}
+export const signTransaction = (
+  tx: Transaction,
+  keyPair: KeyPair,
+  signatureIndex: number
+): SignedTransaction => {
+  const id: Buffer = getTransactionId(tx, signatureIndex);
+  const sig = SHA256withECDSA.sign(id, keyPair);
+  return new SignedTransaction(sig, keyPair.publicKey, signatureIndex, tx);
+};
