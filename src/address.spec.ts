@@ -6,8 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import { addressFromPublicKey, isValidStandardAddress } from './address';
 import { PublicKey } from './crypto';
+import { addressFromPublicKey, isValidStandardAddress } from './address';
 
 test('valid address is valid', () => {
   const validAddress = 'V44i36pPHyhaiW695Xg8PEos4G2PrC';

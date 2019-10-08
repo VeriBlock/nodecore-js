@@ -77,8 +77,16 @@ export class PublicKey {
     return this._full;
   }
 
-  get address(): string {
+  getAddress(): string {
     return addressFromPublicKey(this);
+  }
+
+  toStringHex(): string {
+    return this.asn1.toString('hex');
+  }
+
+  static fromStringHex(h: string): PublicKey {
+    return new PublicKey(Buffer.from(h, 'hex'));
   }
 }
 
@@ -114,6 +122,14 @@ export class PrivateKey {
     const buf = secp256k1.publicKeyCreate(this.canonical, true);
     return new PublicKey(buf);
   }
+
+  toStringHex(): string {
+    return this.asn1.toString('hex');
+  }
+
+  static fromStringHex(h: string): PrivateKey {
+    return new PrivateKey(Buffer.from(h, 'hex'));
+  }
 }
 
 export class Signature {
@@ -144,6 +160,14 @@ export class Signature {
   /// returns canonical secp256k1 signature with length 64 bytes
   get canonical(): Buffer {
     return this._full.slice(this._full.length - 64);
+  }
+
+  toStringHex(): string {
+    return this.asn1.toString('hex');
+  }
+
+  static fromStringHex(h: string): Signature {
+    return new Signature(Buffer.from(h, 'hex'));
   }
 }
 

@@ -6,6 +6,13 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+import BigNumber from 'bignumber.js';
+
+export const INT64_MAX = new BigNumber('0x7fffffffffffffff', 16);
+export const INT64_MIN = new BigNumber('-9223372036854775808');
+
+export const AMOUNT_MAX = INT64_MAX;
+
 export const ADDRESS_LENGTH = 30;
 export const MULTISIG_ADDRESS_LENGTH = 30;
 
@@ -37,8 +44,9 @@ export const MULTISIG_ADDRESS_SIGNING_GROUP_LENGTH =
 
 export const MULTISIG_ADDRESS_IDENTIFIER_INDEX = 30;
 
-export const DIFFICULTY_CALCULATOR_MAXIMUM_TARGET: bigint = BigInt(
-  '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+export const DIFFICULTY_CALCULATOR_MAXIMUM_TARGET = new BigNumber(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffff',
+  16
 );
 
 /* The starting character makes addresses easy for humans to recognize. 'V' for VeriBlock. */
