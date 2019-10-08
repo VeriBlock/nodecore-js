@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "JavaScript libraries for veriblock nodecore repo.",
   "scripts": {
+    "build:prod": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "watch": "tsc -w",
     "build": "tsc",
     "check": "gts check",
@@ -51,22 +52,20 @@
     "test": "./test"
   },
   "dependencies": {
-    "@types/invariant": "^2.2.30",
-    "@types/stream-buffers": "^3.0.3",
     "base-x": "^3.0.7",
+    "bignumber.js": "^9.0.0",
+    "class-validator": "^0.10.1",
     "fast-sha256": "^1.1.0",
-    "integer": "^2.1.0",
-    "invariant": "^2.2.4",
+    "json-bigint": "^0.3.0",
     "secp256k1": "^3.7.1",
     "stream-buffers": "^3.0.2"
   },
   "devDependencies": {
     "@types/base-x": "^3.0.0",
-    "@types/bs58": "^4.0.0",
-    "@types/integer": "^1.0.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^10.0.3",
     "@types/secp256k1": "^3.5.0",
+    "@types/stream-buffers": "^3.0.3",
     "gts": "^1.1.0",
     "jest": "^24.9.0",
     "prettier": "1.18.2",

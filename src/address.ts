@@ -19,23 +19,17 @@ import {
   MULTISIG_ADDRESS_CHECKSUM_START,
   MULTISIG_ADDRESS_DATA_END,
   MULTISIG_ADDRESS_DATA_START,
-  MULTISIG_ADDRESS_ID,
   MULTISIG_ADDRESS_LENGTH,
   MULTISIG_ADDRESS_M_VALUE,
   MULTISIG_ADDRESS_MAX_M_VALUE,
   MULTISIG_ADDRESS_MAX_N_VALUE,
   MULTISIG_ADDRESS_MIN_N_VALUE,
   MULTISIG_ADDRESS_N_VALUE,
-  STANDARD_ADDRESS_ID,
   STARTING_CHAR,
 } from './const';
 import { sha256 } from './hash';
 import { InvalidChecksumException } from './exception';
 import { Base58 } from './base58';
-import { WritableStreamBuffer } from 'stream-buffers';
-import { Base59 } from './base59';
-import { Type } from './transaction';
-import { writeBuffer } from './util';
 
 const getDataPortionFromAddress = (address: string): string => {
   return address.substr(ADDRESS_DATA_START, ADDRESS_DATA_END + 1);
@@ -64,7 +58,7 @@ const chopChecksumMultisig = (checksum: string): string => {
 };
 
 export const isValidStandardAddress = (
-  address: string | null | undefined
+  address: Address | string | null | undefined
 ): boolean => {
   if (!address) {
     return false;
@@ -86,7 +80,7 @@ export const isValidStandardAddress = (
 };
 
 export const isValidMultisigAddress = (
-  address: string | null | undefined
+  address: Address | string | null | undefined
 ): boolean => {
   if (!address) {
     return false;
@@ -135,7 +129,9 @@ export const isValidMultisigAddress = (
   );
 };
 
-export const addressFromPublicKey = (publicKey: PublicKey | Buffer): string => {
+export const addressFromPublicKey = (
+  publicKey: PublicKey | Buffer
+): Address => {
   if (publicKey instanceof Buffer) {
     publicKey = new PublicKey(publicKey);
   }
@@ -151,56 +147,4 @@ export const addressFromPublicKey = (publicKey: PublicKey | Buffer): string => {
   return address + checksum;
 };
 
-export class Address {
-  readonly type: Type;
-  constructor(readonly value: string) {
-    if (isValidStandardAddress(value)) {
-      this.type = Type.STANDARD;
-      return;
-    }
-
-    if (isValidMultisigAddress(value)) {
-      this.type = Type.MULTISIG;
-      return;
-    }
-
-    throw new Error('invalid address');
-  }
-
-  static fromPublicKey(publicKey: PublicKey | Buffer): Address {
-    if (publicKey instanceof Buffer) {
-      publicKey = new PublicKey(publicKey);
-    }
-
-    return new Address(publicKey.address);
-  }
-
-  write(b: WritableStreamBuffer) {
-    let bytes: Buffer;
-    switch (this.type) {
-      case Type.MULTISIG:
-        b.write(Buffer.from([MULTISIG_ADDRESS_ID]));
-        bytes = Base59.decode(this.value);
-        break;
-      case Type.STANDARD:
-        b.write(Buffer.from([STANDARD_ADDRESS_ID]));
-        bytes = Base58.decode(this.value);
-        break;
-      default:
-        // if thrown, this is likely to be a programming error
-        throw new Error('can not determine address type');
-    }
-
-    writeBuffer(b, bytes);
-  }
-}
-
-export type AddressLike = Address | string;
-
-export const addressLikeToAddress = (addressLike: AddressLike): Address => {
-  if (addressLike instanceof Address) {
-    return addressLike;
-  } else {
-    return new Address(addressLike);
-  }
-};
+export type Address = string;

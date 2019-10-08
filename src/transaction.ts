@@ -5,59 +5,119 @@
 // https://www.veriblock.org
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+// tslint:disable-next-line:variable-name
+import BigNumber from 'bignumber.js';
 
-import { Address, AddressLike, addressLikeToAddress } from './address';
+// tslint:disable-next-line:variable-name
+const JSONbig = require('json-bigint')({ strict: true, storeAsString: false });
+
 import {
-  assertInt,
-  assertMaxNumber,
-  assertNumberInRange,
-  assertPositive,
+  Address,
+  isValidMultisigAddress,
+  isValidStandardAddress,
+} from './address';
+import {
+  assertAddressValid,
+  assertAmountValid,
+  assertByteValid,
   serializeTransactionEffects,
 } from './util';
 import { sha256 } from './hash';
 import { KeyPair, PublicKey, SHA256withECDSA, Signature } from './crypto';
-import { Amount, AmountLike, amountLikeToAmount } from './amount';
-import { Output } from './basic';
 
-export enum Type {
+export enum AddressType {
   ZERO_UNUSED = 0,
   STANDARD = 1,
   PROOF_OF_PROOF = 2,
   MULTISIG = 3,
 }
 
+export class Output {
+  constructor(readonly address: Address, readonly amount: Amount) {
+    assertAddressValid(address);
+    assertAmountValid(amount);
+  }
+
+  toJSON() {
+    return {
+      address: this.address,
+      amount: this.amount,
+    };
+  }
+
+  stringify(): string {
+    return JSONbig.stringify(this);
+  }
+
+  static parse(json: string): Output {
+    return Output.fromJSON(JSONbig.parse(json));
+  }
+
+  // tslint:disable-next-line:no-any
+  static fromJSON(obj: any): Output {
+    const { address, amount } = obj;
+    return new Output(address, new BigNumber(amount));
+  }
+}
+
+export type Amount = BigNumber;
+
+export type Byte = number;
+
 export class Transaction {
-  private _address: Address;
-  private _amount: Amount;
+  readonly type: AddressType;
 
   constructor(
-    readonly type: Type,
-    sourceAddress: AddressLike,
-    sourceAmount: AmountLike,
+    readonly sourceAddress: Address,
+    readonly sourceAmount: Amount,
     readonly outputs: Output[],
-    readonly networkByte: number
+    readonly networkByte: Byte
   ) {
-    // check type
-    assertNumberInRange(type, 0, 3);
+    if (isValidStandardAddress(sourceAddress)) {
+      this.type = AddressType.STANDARD;
+    } else if (isValidMultisigAddress(sourceAddress)) {
+      this.type = AddressType.MULTISIG;
+    } else {
+      throw new Error('invalid source address');
+    }
 
-    // check address
-    this._address = addressLikeToAddress(sourceAddress);
-
-    // check amount
-    this._amount = amountLikeToAmount(sourceAmount);
-
-    // check networkByte
-    assertPositive(networkByte, 'networkByte');
-    assertInt(networkByte, 'networkByte');
-    assertMaxNumber(networkByte, 0xff, 'networkByte');
+    assertAmountValid(sourceAmount);
+    outputs.forEach(o => {
+      assertAddressValid(o.address);
+      assertAmountValid(o.amount);
+    });
+    assertByteValid(networkByte);
   }
 
-  get sourceAddress(): Address {
-    return this._address;
+  stringify(): string {
+    return JSONbig.stringify(this);
   }
 
-  get sourceAmount(): Amount {
-    return this._amount;
+  toJSON() {
+    return {
+      type: this.type,
+      sourceAddress: this.sourceAddress,
+      sourceAmount: this.sourceAmount,
+      outputs: this.outputs,
+      networkByte: this.networkByte,
+    };
+  }
+
+  static parse(json: string): Transaction {
+    return Transaction.fromJSON(JSONbig.parse(json));
+  }
+
+  // tslint:disable-next-line:no-any
+  static fromJSON(obj: any): Transaction {
+    const { sourceAddress, sourceAmount, outputs, networkByte } = obj;
+
+    return new Transaction(
+      sourceAddress,
+      sourceAmount,
+      // tslint:disable-next-line:no-any
+      outputs.map((o: any) => Output.fromJSON(o)),
+      networkByte
+    );
   }
 }
 
@@ -73,17 +133,54 @@ export class SignedTransaction {
   constructor(
     readonly signature: Signature,
     readonly publicKey: PublicKey,
-    readonly signatureIndex: number,
+    readonly signatureIndex: Byte,
     readonly transaction: Transaction
-  ) {}
+  ) {
+    assertByteValid(signatureIndex);
+  }
+
+  stringify(): string {
+    return JSONbig.stringify(this);
+  }
+
+  toJSON() {
+    return {
+      signature: this.signature.toStringHex(),
+      publicKey: this.publicKey.toStringHex(),
+      signatureIndex: this.signatureIndex,
+      transaction: this.transaction,
+    };
+  }
+
+  static parse(json: string): SignedTransaction {
+    return SignedTransaction.fromJSON(JSONbig.parse(json));
+  }
+
+  // tslint:disable-next-line:no-any
+  static fromJSON(obj: any): SignedTransaction {
+    const { signature, publicKey, signatureIndex, transaction } = obj;
+
+    return new SignedTransaction(
+      Signature.fromStringHex(signature),
+      PublicKey.fromStringHex(publicKey),
+      signatureIndex,
+      Transaction.fromJSON(transaction)
+    );
+  }
 }
 
 export const signTransaction = (
-  tx: Transaction,
+  transaction: Transaction,
   keyPair: KeyPair,
-  signatureIndex: number
+  signatureIndex: Byte
 ): SignedTransaction => {
-  const id: Buffer = getTransactionId(tx, signatureIndex);
-  const sig = SHA256withECDSA.sign(id, keyPair);
-  return new SignedTransaction(sig, keyPair.publicKey, signatureIndex, tx);
+  assertByteValid(signatureIndex);
+  const id: Buffer = getTransactionId(transaction, signatureIndex);
+  const signature = SHA256withECDSA.sign(id, keyPair);
+  return new SignedTransaction(
+    signature,
+    keyPair.publicKey,
+    signatureIndex,
+    transaction
+  );
 };
