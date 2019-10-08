@@ -6,7 +6,13 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import { KeyPair, PrivateKey, PublicKey, SHA256withECDSA } from './crypto';
+import {
+  KeyPair,
+  PrivateKey,
+  PublicKey,
+  SHA256withECDSA,
+  Signature,
+} from './crypto';
 import { sha256 } from './hash';
 
 const ASN1_PUBLIC_KEY =
@@ -65,6 +71,19 @@ describe('keypairs can be parsed correctly', () => {
       '3056301006072A8648CE3D020106052B8104000A034200044B649515A30A4361DD875F8FAD16C37142116217E5B8069C444773B59911BC671717216C6A878216F47A9083A0E4EB4AD592037C520BA65C449DF687448D39F9'
     );
   });
+
+  const sigs = [
+    '3045022100A09A4374161134803B05A65E0EC3BB63CEBDFBD563436842FB08DB62C1232C2F02201DF9472377071BC7A7122C67C45DF35F346401F19F66BF93FF8829B66FBB4BF8',
+    '304502202778AC6399E243377BF3999D9E46AB9FDC37DFD77EAE9A01C46DCB347681702702210094D969BAFD1A0CB797AB27A10E683B17668F97766B28BAF667A86E69D93F060A',
+    '30450220529FA01ED4FFC4DFC339D7EB013B4C9B979BC3BBBBF5894635B58C6FC31FF218022100F357BD4006FE450DD9EBA7FBBDEF1C438733FC19C5399C5D8F18D89CF859FE7F',
+  ];
+
+  sigs.forEach(sig => {
+    it(`signature ${sig} can be parsed`, () => {
+      const s = () => Signature.fromStringHex(sig);
+      expect(s).not.toThrow();
+    });
+  });
 });
 
 describe('keygen', () => {
@@ -110,26 +129,25 @@ describe('signature works', () => {
     expect(result).toEqual(true);
   });
 
-  // TODO: fix this test
-  // it('verify signature from java', () => {
-  //   const kp = KeyPair.fromPrivateKey(
-  //     Buffer.from(
-  //       '303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F',
-  //       'hex'
-  //     )
-  //   );
-  //
-  //   const msg = Buffer.from(
-  //     '4cb778a158601701c98028b778e583859ef814ba1a57284fadef720a1dd5fbb7',
-  //     'hex'
-  //   );
-  //
-  //   const sig = Signature.fromStringHex(
-  //     '3045022100A09A4374161134803B05A65E0EC3BB63CEBDFBD563436842FB08DB62C1232C2F02201DF9472377071BC7A7122C67C45DF35F346401F19F66BF93FF8829B66FBB4BF8'
-  //   );
-  //   const result: boolean = SHA256withECDSA.verify(msg, sig, kp);
-  //   expect(result).toEqual(true);
-  // });
+  it('verify signature from java', () => {
+    const kp = KeyPair.fromPrivateKey(
+      Buffer.from(
+        '303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F',
+        'hex'
+      )
+    );
+
+    const msg = Buffer.from(
+      '4cb778a158601701c98028b778e583859ef814ba1a57284fadef720a1dd5fbb7',
+      'hex'
+    );
+
+    const sig = Signature.fromStringHex(
+      '3045022100A09A4374161134803B05A65E0EC3BB63CEBDFBD563436842FB08DB62C1232C2F02201DF9472377071BC7A7122C67C45DF35F346401F19F66BF93FF8829B66FBB4BF8'
+    );
+    const result: boolean = SHA256withECDSA.verify(msg, sig, kp);
+    expect(result).toEqual(true);
+  });
 
   it('sign produces deterministic signatures', () => {
     const kp = KeyPair.fromPrivateKey(

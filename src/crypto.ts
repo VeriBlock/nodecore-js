@@ -23,9 +23,6 @@ export const PRIVKEY_ASN1_PREFIX = Buffer.from(
   'hex'
 );
 
-// prefix which you need to add to a signature to get asn1 encoded signature
-export const SIGNATURE_ASN1_PREFIX = Buffer.from('304502204348CE', 'hex');
-
 export class PublicKey {
   // stores asn1 encoded public key as [pubkey asn1 prefix + 0x04 + x + y]
   // 88 bytes in total
@@ -133,20 +130,13 @@ export class PrivateKey {
 }
 
 export class Signature {
-  private readonly _full: Buffer;
+  private readonly _canonical: Buffer;
 
   constructor(buffer: Buffer) {
-    if (buffer.length === 64) {
-      // it is plain signature
-      this._full = Buffer.concat([SIGNATURE_ASN1_PREFIX, buffer]);
-    } else if (
-      buffer.length === 71 &&
-      buffer
-        .slice(0, SIGNATURE_ASN1_PREFIX.length)
-        .compare(SIGNATURE_ASN1_PREFIX) === 0
-    ) {
-      // this is full asn1 encoded signature
-      this._full = buffer;
+    if (buffer.length === 71) {
+      this._canonical = secp256k1.signatureImport(buffer);
+    } else if (buffer.length === 64) {
+      this._canonical = buffer;
     } else {
       throw new Error('unknown signature format');
     }
@@ -154,12 +144,12 @@ export class Signature {
 
   /// returns full asn1 encoded signature of length 71 bytes
   get asn1(): Buffer {
-    return this._full;
+    return secp256k1.signatureExport(this._canonical);
   }
 
   /// returns canonical secp256k1 signature with length 64 bytes
   get canonical(): Buffer {
-    return this._full.slice(this._full.length - 64);
+    return this._canonical;
   }
 
   toStringHex(): string {

@@ -41,7 +41,7 @@ describe('transaction', () => {
     expect(deserialized).toEqual(signed);
     expect(deserialized.stringify()).toEqual(str);
     expect(deserialized.stringify()).toEqual(
-      '{"signature":"304502204348ce9c3d7cdb6bd7939f7acabd7e3b6eb00900f5cb496d6bd99354fe3f073b7b89d3268c65be85c2b677459ccd5ababd7f764eb227b3e051dbe14a7f63b97a4865eb","publicKey":"3056301006072a8648ce3d020106052b8104000a034200044b649515a30a4361dd875f8fad16c37142116217e5b8069c444773b59911bcce38782d7ba06c0b9b771305d065279ce9f2288c8eab5328d260629085f7653504","signatureIndex":0,"transaction":{"type":1,"sourceAddress":"V5ZguGxnAckADJMkFFG6Vpr9EGyk6v","sourceAmount":9223372036854775807,"outputs":[{"address":"V5ZguGxnAckADJMkFFG6Vpr9EGyk6v","amount":100}],"networkByte":1}}'
+      '{"signature":"30450221009c3d7cdb6bd7939f7acabd7e3b6eb00900f5cb496d6bd99354fe3f073b7b89d30220268c65be85c2b677459ccd5ababd7f764eb227b3e051dbe14a7f63b97a4865eb","publicKey":"3056301006072a8648ce3d020106052b8104000a034200044b649515a30a4361dd875f8fad16c37142116217e5b8069c444773b59911bcce38782d7ba06c0b9b771305d065279ce9f2288c8eab5328d260629085f7653504","signatureIndex":0,"transaction":{"type":1,"sourceAddress":"V5ZguGxnAckADJMkFFG6Vpr9EGyk6v","sourceAmount":9223372036854775807,"outputs":[{"address":"V5ZguGxnAckADJMkFFG6Vpr9EGyk6v","amount":100}],"networkByte":1}}'
     );
   });
 });
