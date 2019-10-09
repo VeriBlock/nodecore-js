@@ -1,4 +1,5 @@
 dist
+!html/dist
 .idea
 node_modules
 tsconfig.tsbuildinfo
