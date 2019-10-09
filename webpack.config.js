@@ -22,4 +22,8 @@ module.exports = {
     filename: 'bundle.dev.js',
     path: path.resolve(__dirname, 'html/dist'),
   },
+  node: {
+    Buffer: true,
+  },
+  target: 'web',
 };

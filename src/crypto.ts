@@ -85,6 +85,10 @@ export class PublicKey {
   static fromStringHex(h: string): PublicKey {
     return new PublicKey(Buffer.from(h, 'hex'));
   }
+
+  static fromStringBase64(b64: string): PublicKey {
+    return new PublicKey(Buffer.from(b64, 'base64'));
+  }
 }
 
 export class PrivateKey {
@@ -127,6 +131,10 @@ export class PrivateKey {
   static fromStringHex(h: string): PrivateKey {
     return new PrivateKey(Buffer.from(h, 'hex'));
   }
+
+  static fromStringBase64(b64: string): PrivateKey {
+    return new PrivateKey(Buffer.from(b64, 'base64'));
+  }
 }
 
 export class Signature {
@@ -158,6 +166,10 @@ export class Signature {
 
   static fromStringHex(h: string): Signature {
     return new Signature(Buffer.from(h, 'hex'));
+  }
+
+  static fromStringBase64(b64: string): Signature {
+    return new Signature(Buffer.from(b64, 'base64'));
   }
 }
 
