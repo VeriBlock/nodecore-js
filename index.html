@@ -75,7 +75,6 @@
       <div class="">
         <ul style="display:table; margin:0 auto;">
           <li>all functions and feauters are available via browser console <u class="code">#:> VeriBlock.*</u></li>
-          <li>only <u class="code">isValidStandardAddress</u> is working in the current HTML page</li>
         </ul>
       </div>
 
@@ -85,6 +84,7 @@
         <button id="btn-isValidAddr" class="btn btn-outline-secondary">isValidStandardAddress</button>
         <button id="btn-addrFromPubKey" class="btn btn-outline-secondary">addrFromPublicKey</button>
         <button id="btn-signMessage" class="btn btn-outline-secondary">signMessageWithPrivateKey</button>
+        <button id="btn-generateKeypair" class="btn btn-outline-secondary">generateKeypair</button>
       </div>
     </div>
 
@@ -100,9 +100,6 @@
       <input type="text" class="form-control generated" id="address" name="address" alt="1234">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" id="button-addr-def"><i class="fab fa-angellist"></i></button>
-        <!-- <button class="btn btn-outline-secondary" type="button" id="button-addr-clear"><i class='fas fa-backspace'></i></button>
-        <button class="btn btn-outline-secondary" type="button" id="button-addr-copy"><i class='far fa-copy'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='fa fa-paste'></i></button> -->
       </div>
     </div>
 
@@ -114,9 +111,6 @@
       <input type="text" class="form-control generated" id="pubKey" name="pubKey">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" id="button-pubKey-def"><i class="fab fa-angellist"></i></button>
-        <!-- <button class="btn btn-outline-secondary" type="button"><i class='fas fa-backspace'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='far fa-copy'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='fa fa-paste'></i></button> -->
       </div>
     </div>
 
@@ -127,10 +121,14 @@
       <input type="text" class="form-control generated" id="privKey" name="privkey">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" id="button-privKey-def"><i class="fab fa-angellist"></i></button>
-        <!-- <button class="btn btn-outline-secondary" type="button"><i class='fas fa-backspace'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='far fa-copy'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='fa fa-paste'></i></button> -->
       </div>
+    </div>
+
+    <div class="form-group input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text for-btn-verify-sign for-btn-gen-addr" for="sigIndex">Signature Index (number):</span>
+      </div>
+      <input type="text" class="form-control generated" id="sigIndex" name="sigIndex" value="0">
     </div>
 
     <div class="form-group input-group">
@@ -140,9 +138,6 @@
       <input type="text" class="form-control generated-sign" id="validAddr" name="validAddr" disabled>
 
       <div class="input-group-append">
-        <!-- <button class="btn btn-outline-secondary" type="button"><i class='fas fa-backspace'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='far fa-copy'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='fa fa-paste'></i></button> -->
       </div>
     </div>
 
@@ -153,9 +148,6 @@
     <div class="form-group input-group">
       <textarea class="form-control generated-sign" aria-label="With textarea" id="message"></textarea>
       <div class="input-group-append">
-        <!-- <button class="btn btn-outline-secondary" type="button"><i class='fas fa-backspace'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='far fa-copy'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='fa fa-paste'></i></button> -->
       </div>
     </div>
 
@@ -166,9 +158,6 @@
     <div class="form-group input-group">
       <textarea class="form-control generated-sign" aria-label="With textarea" id="signature" disabled></textarea>
       <div class="input-group-append">
-        <!-- <button class="btn btn-outline-secondary" type="button"><i class='fas fa-backspace'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='far fa-copy'></i></button>
-        <button class="btn btn-outline-secondary" type="button"><i class='fa fa-paste'></i></button> -->
       </div>
     </div>
 
@@ -234,6 +223,27 @@
       },
       get message() {
         return $("#message").val();
+      },
+
+      set signature(value) {
+        $("#signature").val(value);
+      },
+      get signature() {
+        return $("#signature").val();
+      },
+
+      set signatureIndex(value) {
+        $("#sigIndex").val(value);
+      },
+      get signatureIndex() {
+        return $("#sigIndex").val();
+      },
+
+      set transaction(value) {
+        $("#code-data").val(value);
+      },
+      get transaction() {
+        return $("#code-data").val();
       }
     };
 
@@ -254,7 +264,7 @@
           "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE1FUzpjM/Dv8gLfOND6GxuJXPHDPIDWPp0C0ju6DyiTCCVGKyb3KrVpP+o1RPyXqSlD8YxMk9qadeuCPgGkvtlA==",
           "MD4CAQAwEAYHKoZIzj0CAQYFK4EEAAoEJzAlAgEBBCB0TYqZAfRD2u/LZhJBqTV8Dg9+VfOc8gmh2K50QmmT4w=="
         ]
-      }
+      };
 
       var exampleAddr    = "V44i36pPHyhaiW695Xg8PEos4G2PrC";
       var examplePubKey  = "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAERma1mS2caMSQHp4fV/UbRipyQCu47VOik8oQze9SA3EMxuLWlTHBBEYWALFBTxpcd99ksgWaOmGxAdfJ9Ybctg==";
@@ -280,34 +290,43 @@
         data.message   = "hello world"
       });
 
+      $('#btn-generateKeypair').on('click', function(){
+        let r = VeriBlock.crypto.KeyPair.generate();
+        data.privKey64 = r.privateKey.asn1.toString('base64');
+        data.pubKey64 = r.publicKey.asn1.toString('base64');
+        data.address = r.publicKey.getAddress()
+      });
+
       $('#btn-isValidAddr').on('click', function(){
         let r = VeriBlock.address.isValidStandardAddress(data.address);
-        console.log(r);
         $('#validAddr').val(r);
       });
 
       $('#btn-addrFromPubKey').on('click', function(){
-        let addr = NodecoreJS.unit.AddressUtility.addressFromPublicKey(data.pubKey64);
-        console.log(addr);
-        $('#address').val(addr);
+        const pub = VeriBlock.crypto.PublicKey.fromStringBase64(data.pubKey64);
+        data.address = VeriBlock.address.addressFromPublicKey(pub);
       });
 
       $('#btn-signMessage').on('click', function(){
-        let privKey = data.privKey64;
-        let message = data.message;
-
-        let signature = NodecoreJS.unit.Utility.signMessageWithPrivateKey(message, privKey);
-        let bytes = NodecoreJS.tools.codecs.bytes_to_hex(signature)
-        //console.log(signature);
-
-        $('#signature').val(bytes);
+        try {
+          var message = data.message;
+          var pk = VeriBlock.crypto.PrivateKey.fromStringBase64(data.privKey64);
+          var tx = VeriBlock.transaction.Transaction.parse(data.transaction);
+          var kp = VeriBlock.crypto.KeyPair.fromPrivateKey(pk);
+          var signature = VeriBlock.transaction.signTransaction(tx, kp, data.signatureIndex);
+          data.signature = signature.asn1.toString('base64');
+        } catch(e) {
+          alert(`Invalid tansaction: ${JSON.stringify(e)}`);
+        }
       });
 
       // Transaction operations
       $('#btn-tx-createBlankTx').on('click', function(){
-        //txLoad();
+        var tx = VeriBlock.transaction.Transaction(
+                data.address,
+                100,
 
-        tx = NodecoreJS.transaction.createBlankTx();
+        )
         tx.address = data.address;
 
         tx2pretty(tx);
@@ -320,13 +339,6 @@
 
         tx2pretty(tx);
       });
-
-
-      // $('#btn-tx-calcTxID').on('click', function(){
-      //   txLoad();
-      //   tx.id = tx.TxIDByteArray();
-      //   tx2pretty(tx);
-      // });
 
       $('#btn-tx-sign').on('click', function(){
         txLoad();

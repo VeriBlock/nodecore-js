@@ -5,7 +5,7 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
-    "webpack" : "node_modules/.bin/webpack-cli",
+    "webpack": "node_modules/.bin/webpack-cli",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
@@ -48,12 +48,10 @@
     "url": "https://github.com/VeriBlock/nodecore-js/issues"
   },
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
-  "directories": {
-    "test": "./test"
-  },
   "dependencies": {
     "base-x": "^3.0.7",
     "bignumber.js": "^9.0.0",
+    "buffer": "^5.4.3",
     "fast-sha256": "^1.1.0",
     "json-bigint": "^0.3.0",
     "secp256k1": "^3.7.1",
@@ -67,16 +65,12 @@
     "@types/stream-buffers": "^3.0.3",
     "browserify": "^16.5.0",
     "gts": "^1.1.0",
-    "gulp": "^4.0.2",
-    "gulp-typescript": "^5.0.1",
     "jest": "^24.9.0",
     "prettier": "1.18.2",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.0",
-    "tsify": "^4.0.1",
     "tslint": "^5.20.0",
     "typescript": "^3.5.3",
-    "vinyl-source-stream": "^2.0.0",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
   }
