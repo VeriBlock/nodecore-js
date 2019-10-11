@@ -20,6 +20,7 @@ import {
   assertAddressValid,
   assertAmountValid,
   assertByteValid,
+  makeBigNumber,
   serializeTransactionEffects,
 } from './util';
 import { sha256 } from './hash';
@@ -56,11 +57,11 @@ export class Output {
   // tslint:disable-next-line:no-any
   static fromJSON(obj: any): Output {
     const { address, amount } = obj;
-    return new Output(address, new BigNumber(amount));
+    return new Output(address, makeBigNumber(amount));
   }
 }
 
-export type Amount = BigNumber;
+export type Amount = BigNumber | string | number;
 
 export type Byte = number;
 
@@ -97,7 +98,7 @@ export class Transaction {
     return {
       type: this.type,
       sourceAddress: this.sourceAddress,
-      sourceAmount: this.sourceAmount,
+      sourceAmount: makeBigNumber(this.sourceAmount),
       outputs: this.outputs,
       networkByte: this.networkByte,
     };
@@ -113,7 +114,7 @@ export class Transaction {
 
     return new Transaction(
       sourceAddress,
-      sourceAmount,
+      makeBigNumber(sourceAmount),
       // tslint:disable-next-line:no-any
       outputs.map((o: any) => Output.fromJSON(o)),
       networkByte
