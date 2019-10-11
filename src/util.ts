@@ -18,21 +18,32 @@ import {
 } from './address';
 import BigNumber from 'bignumber.js';
 
-export const trimmedByteArrayFromNumber = (z: BigNumber): Buffer => {
-  let n: bigint = BigInt(z.toString(10));
-  let x = 8n;
+const bigNumberRightShift = (b: BigNumber, bits: number): BigNumber => {
+  const p = new BigNumber(2).pow(bits);
+  return b.dividedToIntegerBy(p);
+};
+
+export const trimmedByteArrayFromNumber = (n: BigNumber): Buffer => {
+  let x = 8;
+
+  if (n.isNegative()) {
+    // if n=-1, make it = 0xffffffffffffffff
+    n = new BigNumber('0xffffffffffffffff', 16).plus(n).plus(1);
+  }
+
   do {
-    if (n >> ((x - 1n) * 8n) !== 0n) {
+    const c = bigNumberRightShift(n, (x - 1) * 8);
+    if (c.comparedTo(0) !== 0) {
       break;
     }
     x--;
   } while (x > 1);
 
   const trimmedByteArray: Buffer = Buffer.alloc(Number(x));
-  for (let i = 0n; i < x; i++) {
-    const c = n & 0xffn;
-    trimmedByteArray.writeUInt8(Number(c), Number(x - i - 1n));
-    n >>= 8n;
+  for (let i = 0; i < x; i++) {
+    const c = n.mod(256).toNumber(); // equivalent of (n & 0xff)
+    trimmedByteArray.writeUInt8(c, x - i - 1);
+    n = bigNumberRightShift(n, 8);
   }
 
   return trimmedByteArray;
@@ -62,7 +73,7 @@ export const writeBuffer = (stream: WritableStreamBuffer, b: Buffer): void => {
 };
 
 const writeAmount = (stream: WritableStreamBuffer, amount: Amount): void => {
-  writeVarLenNumberValueToStream(stream, amount);
+  writeVarLenNumberValueToStream(stream, makeBigNumber(amount));
 };
 
 const writeAddress = (stream: WritableStreamBuffer, address: string): void => {
@@ -165,5 +176,17 @@ export const assertByteValid = (byte: Byte) => {
 };
 
 export const assertAmountValid = (amount: Amount) => {
-  assertNumberInRange(amount, new BigNumber(0), AMOUNT_MAX);
+  assertNumberInRange(makeBigNumber(amount), new BigNumber(0), AMOUNT_MAX);
+};
+
+export const makeBigNumber = (amount: Amount): BigNumber => {
+  switch (typeof amount) {
+    case 'bigint':
+    case 'string':
+    case 'number':
+    case 'object':
+      return new BigNumber(amount);
+    default:
+      throw new Error('unknown amount type');
+  }
 };

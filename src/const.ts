@@ -10,8 +10,7 @@ import BigNumber from 'bignumber.js';
 
 export const INT64_MAX = new BigNumber('0x7fffffffffffffff', 16);
 export const INT64_MIN = new BigNumber('-9223372036854775808');
-
-export const AMOUNT_MAX = INT64_MAX;
+export const AMOUNT_MAX = new BigNumber(INT64_MAX); // make a copy
 
 export const ADDRESS_LENGTH = 30;
 export const MULTISIG_ADDRESS_LENGTH = 30;
