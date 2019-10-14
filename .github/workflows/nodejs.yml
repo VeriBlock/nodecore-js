@@ -37,3 +37,11 @@ jobs:
         CI: true
     - name: collect coverage
       run: npm run test:cov
+    - name: sonar-scanner
+      uses: Warchant/sonar-scanner-action@v1
+      # run only on push to develop/master
+      if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        options: '-Dsonar.login=${{ secrets.SONAR_TOKEN }}'
