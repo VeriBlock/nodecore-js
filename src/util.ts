@@ -190,3 +190,19 @@ export const makeBigNumber = (amount: Amount): BigNumber => {
       throw new Error('unknown amount type');
   }
 };
+
+export const bufferFromBase64 = (b64: string): Buffer => {
+  return Buffer.from(b64, 'base64');
+};
+
+export const bufferFromHex = (hex: string): Buffer => {
+  return Buffer.from(hex, 'hex');
+};
+
+export const bufferFromUtf8 = (utf8: string): Buffer => {
+  return Buffer.from(utf8, 'utf8');
+};
+
+export const bufferFromArray = (array: string): Buffer => {
+  return Buffer.from(array);
+};

@@ -152,7 +152,7 @@
     </div>
 
     <div class="col-sm-offset-2 col-sm-10">
-        <b>signature bytes[]</b>:
+        <b>signature HEX bytes[]</b>:
     </div>
     <p>
     <div class="form-group input-group">
@@ -309,14 +309,17 @@
 
       $('#btn-signMessage').on('click', function(){
         try {
-          var message = data.message;
+          var msg = VeriBlock.util.bufferFromUtf8(data.message);
           var pk = VeriBlock.crypto.PrivateKey.fromStringBase64(data.privKey64);
-          var tx = VeriBlock.transaction.Transaction.parse(data.transaction);
-          var kp = VeriBlock.crypto.KeyPair.fromPrivateKey(pk);
-          var signature = VeriBlock.transaction.signTransaction(tx, kp, data.signatureIndex);
-          data.signature = signature.asn1.toString('base64');
+          var signature = VeriBlock.crypto.SHA256withECDSA.sign(msg, pk)
+          // var message = data.message;
+          // var pk = VeriBlock.crypto.PrivateKey.fromStringBase64(data.privKey64);
+          // var tx = VeriBlock.transaction.Transaction.parse(data.transaction);
+          // var kp = VeriBlock.crypto.KeyPair.fromPrivateKey(pk);
+          // var signature = VeriBlock.transaction.signTransaction(tx, kp, data.signatureIndex);
+          data.signature = signature.toStringHex(); //signature.asn1.toString('base64');
         } catch(e) {
-          alert(`Invalid tansaction: ${JSON.stringify(e)}`);
+          alert(`Invalid signing: ${JSON.stringify(e)}`);
         }
       });
 
