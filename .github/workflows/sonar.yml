@@ -25,10 +25,10 @@ jobs:
         CI: true
     - name: collect coverage
       run: npm run test:cov
-    - name: sonar-scanner
-      uses: Warchant/sonar-scanner-action@v1
+    - name: setup sonar-scanner
+      uses: warchant/setup-sonar-scanner@v1
+    - name: run sonar-scanner
       # run only on push to develop/master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        options: '-Dsonar.login=${{ secrets.SONAR_TOKEN }}'
+      run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
