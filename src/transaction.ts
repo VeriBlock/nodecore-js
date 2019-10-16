@@ -72,7 +72,7 @@ export class Transaction {
     readonly sourceAddress: Address,
     readonly sourceAmount: Amount,
     readonly outputs: Output[],
-    readonly networkByte: Byte
+    readonly networkByte?: Byte
   ) {
     if (isValidStandardAddress(sourceAddress)) {
       this.type = AddressType.STANDARD;
@@ -87,7 +87,8 @@ export class Transaction {
       assertAddressValid(o.address);
       assertAmountValid(o.amount);
     });
-    assertByteValid(networkByte);
+
+    if (networkByte !== undefined) assertByteValid(networkByte);
   }
 
   stringify(): string {
@@ -95,13 +96,22 @@ export class Transaction {
   }
 
   toJSON() {
-    return {
-      type: this.type,
-      sourceAddress: this.sourceAddress,
-      sourceAmount: makeBigNumber(this.sourceAmount),
-      outputs: this.outputs,
-      networkByte: this.networkByte,
-    };
+    if (this.networkByte === undefined) {
+      return {
+        type: this.type,
+        sourceAddress: this.sourceAddress,
+        sourceAmount: makeBigNumber(this.sourceAmount),
+        outputs: this.outputs,
+      };
+    } else {
+      return {
+        type: this.type,
+        sourceAddress: this.sourceAddress,
+        sourceAmount: makeBigNumber(this.sourceAmount),
+        outputs: this.outputs,
+        networkByte: this.networkByte,
+      };
+    }
   }
 
   static parse(json: string): Transaction {

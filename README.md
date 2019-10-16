@@ -1,10 +1,11 @@
-# nodecore-js
-JavaScript libraries for nodecore repo.
+# Nodecore-js
+JavaScript libraries for nodecore repo. Demo page for live test is [here](https://veriblock.github.io/nodecore-js/).
 
-## workflow
+## Workflow
 
-## examples
+## Examples
 
+### Basic
 1. `KeyPair.generate`
     ```
     // case 1: generate
@@ -60,3 +61,24 @@ JavaScript libraries for nodecore repo.
     VeriBlock.crypto.SHA256withECDSA.verify(msgBytes, signature, pair.publicKey)
     // >> true
     ```
+
+### Transaction creation
+
+```
+var addrI   = "VAE91zJuku3oiMa7tqZKwo2YQ2UvcD"
+var amountI = 1.0
+
+var addrO   = "VHB1WuJVkd21WrrvKA1fnWHAn5w7J5"
+var amountO = 1.0
+var out1    = new VeriBlock.transaction.Output(addrO, amountO) // just an example
+
+var tx      = new VeriBlock.transaction.Transaction(addrI, amountI, [out1])
+
+// key pair for signing
+var priv64  = "MD4CAQAwEAYHKoZIzj0CAQYFK4EEAAoEJzAlAgEBBCBY79xQac61eranrEt4rDYYo9bn1UjWqNmALwefcduA1A=="
+var priv    = VeriBlock.crypto.PrivateKey.fromStringBase64(priv64)
+var pair    = VeriBlock.crypto.KeyPair.fromPrivateKey(priv)
+var signatureIndex = 0
+
+var signedTx = VeriBlock.transaction.signTransaction(tx, pair, signatureIndex)
+```
