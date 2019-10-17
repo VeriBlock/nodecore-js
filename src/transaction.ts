@@ -88,7 +88,7 @@ export class Transaction {
       assertAmountValid(o.amount);
     });
 
-    if (networkByte !== undefined) assertByteValid(networkByte);
+    if (!networkByte) assertByteValid(networkByte);
   }
 
   stringify(): string {
