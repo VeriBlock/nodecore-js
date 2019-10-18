@@ -35,5 +35,3 @@ jobs:
       run: npm test
       env:
         CI: true
-    - name: collect coverage
-      run: npm run test:cov
