@@ -319,7 +319,7 @@
           // var signature = VeriBlock.transaction.signTransaction(tx, kp, data.signatureIndex);
           data.signature = signature.toStringHex(); //signature.asn1.toString('base64');
         } catch(e) {
-          alert(`Invalid signing: ${JSON.stringify(e)}`);
+          alert(`Invalid signature: ${JSON.stringify(e)}`);
         }
       });
 
