@@ -65,6 +65,14 @@ export type Amount = BigNumber | string | number;
 
 export type Byte = number;
 
+interface TransactionJSON {
+  type: number;
+  sourceAddress: string;
+  sourceAmount: BigNumber;
+  outputs: Output[];
+  networkByte?: Byte;
+}
+
 export class Transaction {
   readonly type: AddressType;
 
@@ -88,7 +96,7 @@ export class Transaction {
       assertAmountValid(o.amount);
     });
 
-    if (!networkByte) assertByteValid(networkByte);
+    if (networkByte !== undefined) assertByteValid(networkByte);
   }
 
   stringify(): string {
@@ -96,22 +104,18 @@ export class Transaction {
   }
 
   toJSON() {
-    if (this.networkByte === undefined) {
-      return {
-        type: this.type,
-        sourceAddress: this.sourceAddress,
-        sourceAmount: makeBigNumber(this.sourceAmount),
-        outputs: this.outputs,
-      };
-    } else {
-      return {
-        type: this.type,
-        sourceAddress: this.sourceAddress,
-        sourceAmount: makeBigNumber(this.sourceAmount),
-        outputs: this.outputs,
-        networkByte: this.networkByte,
-      };
+    const obj: TransactionJSON = {
+      type: this.type,
+      sourceAddress: this.sourceAddress,
+      sourceAmount: makeBigNumber(this.sourceAmount),
+      outputs: this.outputs,
+    };
+
+    if (this.networkByte) {
+      obj['networkByte'] = this.networkByte;
     }
+
+    return obj;
   }
 
   static parse(json: string): Transaction {
@@ -120,7 +124,8 @@ export class Transaction {
 
   // tslint:disable-next-line:no-any
   static fromJSON(obj: any): Transaction {
-    const { sourceAddress, sourceAmount, outputs, networkByte } = obj;
+    const { sourceAddress, sourceAmount, outputs } = obj;
+    const networkByte = 'networkByte' in obj ? obj.networkByte : undefined;
 
     return new Transaction(
       sourceAddress,
