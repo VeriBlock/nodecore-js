@@ -113,13 +113,11 @@ export const serializeTransactionEffects = (
     writeAddress(stream, o.address);
     writeAmount(stream, o.amount);
   });
-
   writeVarLenNumberValueToStream(stream, new BigNumber(signatureIndex));
-  // put empty buffer
+  // put empty data buffer
   writeVarLenBufferValueToStream(stream, Buffer.alloc(0));
 
   stream.end();
-
   const result: Buffer | false = stream.getContents();
   if (result && result instanceof Buffer) {
     return result;
