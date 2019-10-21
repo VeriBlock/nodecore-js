@@ -7,6 +7,12 @@ import * as base59 from './base59';
 import * as consts from './const';
 import * as hash from './hash';
 
+// external libs
+import BigNumber from 'bignumber.js';
+import { WritableStreamBuffer } from 'stream-buffers';
+
+const jsonBig = require('json-bigint');
+
 module.exports = {
   address,
   transaction,
@@ -16,4 +22,5 @@ module.exports = {
   hash,
   base58,
   base59,
+  libs: { jsonBig, Buffer, BigNumber, WritableStreamBuffer },
 };
