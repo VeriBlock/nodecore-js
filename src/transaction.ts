@@ -75,6 +75,7 @@ interface TransactionJSON {
 
 export class Transaction {
   readonly type: AddressType;
+  txId?: string;
 
   constructor(
     readonly sourceAddress: Address,
@@ -160,12 +161,19 @@ export class SignedTransaction {
   }
 
   toJSON() {
-    return {
+    const obj = {
       signature: this.signature.toStringHex(),
       publicKey: this.publicKey.toStringHex(),
       signatureIndex: this.signatureIndex,
       transaction: this.transaction,
     };
+
+    obj.transaction.txId = getTransactionId(
+      this.transaction,
+      this.signatureIndex
+    ).toString('hex');
+
+    return obj;
   }
 
   static parse(json: string): SignedTransaction {
