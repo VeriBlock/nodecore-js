@@ -49,10 +49,13 @@
   },
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
   "dependencies": {
+    "axios": "^0.19.0",
     "base-x": "^3.0.7",
     "bignumber.js": "^9.0.0",
     "buffer": "^5.4.3",
     "fast-sha256": "^1.1.0",
+    "fp-ts": "^2.1.1",
+    "io-ts": "^2.0.1",
     "json-bigint": "^0.3.0",
     "secp256k1": "^3.7.1",
     "stream-buffers": "^3.0.2"
