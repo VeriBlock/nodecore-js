@@ -62,23 +62,129 @@ JavaScript libraries for nodecore repo. Demo page for live test is [here](https:
     // >> true
     ```
 
-### Transaction creation
+### JSONRPC API
 
-```
-var addrI   = "VAE91zJuku3oiMa7tqZKwo2YQ2UvcD"
-var amountI = 1.0
+1. query for signature index
+   ```json
+    {
+      "jsonrpc": "2.0",
+      "method": "getsignatureindex",
+      "params": {
+        "addresses": [
+          "V4vxZyZ5oR32Vdmj3SFk4SdJ36NRGX"
+        ]
+      },
+      "id": 123
+    }
+   ```
+    
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "result": {
+       "indexes": [
+         {
+           "address": "V4vxZyZ5oR32Vdmj3SFk4SdJ36NRGX",
+           "poolIndex": "13",
+           "blockchainIndex": "13"
+         }
+       ],
+       "success": true
+     },
+     "id": 123
+   }
+    ```
 
-var addrO   = "VHB1WuJVkd21WrrvKA1fnWHAn5w7J5"
-var amountO = 1.0
-var out1    = new VeriBlock.transaction.Output(addrO, amountO) // just an example
+    `poolIndex` is based off of transactions in the mempool, the other is only based on transactions in the actual blockchain.
 
-var tx      = new VeriBlock.transaction.Transaction(addrI, amountI, [out1])
+    If you are creating a new transaction, you will want to use the poolIndex.
 
-// key pair for signing
-var priv64  = "MD4CAQAwEAYHKoZIzj0CAQYFK4EEAAoEJzAlAgEBBCBY79xQac61eranrEt4rDYYo9bn1UjWqNmALwefcduA1A=="
-var priv    = VeriBlock.crypto.PrivateKey.fromStringBase64(priv64)
-var pair    = VeriBlock.crypto.KeyPair.fromPrivateKey(priv)
-var signatureIndex = 0
+2. prepare transaction data
+    ```js
+    const rawTx = {
+        // send VBK from this address
+        sourceAddress: 'V4vxZyZ5oR32Vdmj3SFk4SdJ36NRGX',
+        // deduct this much units from your balance. 1 VBK = 10**9 units.
+        sourceAmount: '100701000',
+        outputs: [
+          {
+            // send here 0.1 VBK
+            address: 'VAE91zJuku3oiMa7tqZKwo2YQ2UvcD',
+            amount: '100000000'
+          }
+        ]
+    }
+    ```
+   
+3. prepare a keypair
+   ```js
+   const privateKeyHex = "303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F";
+   const privateKeyBuffer = bufferFromHex(privateKeyHex); 
+   const keyPair = KeyPair.fromPrivateKey(privateKeyBuffer);
+   ```
 
-var signedTx = VeriBlock.transaction.signTransaction(tx, pair, signatureIndex)
-```
+4. deserialize rawTx into modelTx, sign it with queried signatureIndex (in our example signatureIndex=13)
+   ```js
+   // deserialize rawTx
+   const modelTx = tryDeserializeTransaction(rawTx); // may throw
+   // sign it
+   const signedModelTx = signTransaction(modelTx, keyPair, signatureIndex);
+   // serialize back to raw signed transaction
+   const rawSignedTx = trySerializeSignedTransaction(signedModelTx);
+   ```
+   You will have to get:
+   ```json
+     {
+       "signature": "3045022100bc6508c47500e3cf5e01d4f0c2709602d479d45d486bf244a499df05dbdb233802204de76c6f126b2ef8343dd18b21551a70497c0c50eed81bfca605c3240a5469f5",
+       "publicKey": "3056301006072a8648ce3d020106052b8104000a034200048569053d7b483059100b4c914cce0b39ed3d4b8c70419e9a4f3102a6f9ad62606e6c5085767f4fc83dad5cc5c35e70ce7198b8db0e863ac19e4c20b37a503a5e",
+       "signatureIndex": 13,
+       "transaction": {
+         "transactionFee": "701000",
+         "data": "",
+         "type": 1,
+         "sourceAddress": "V4vxZyZ5oR32Vdmj3SFk4SdJ36NRGX",
+         "sourceAmount": "100701000",
+         "txId": "ffc717462162ebc5e8730cc82b225f998c878be9fc47eb251ccc948cf2d2d296",
+         "outputs": [
+           {
+             "address": "VAE91zJuku3oiMa7tqZKwo2YQ2UvcD",
+             "amount": "100000000"
+           }
+         ]
+       }
+     }
+   ```
+
+5. send `submittransactions` request
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "method": "submittransactions",
+     "id": 124,
+     "params": {
+       "transactions": [
+         {
+           "signed": {
+             "signature": "3045022100bc6508c47500e3cf5e01d4f0c2709602d479d45d486bf244a499df05dbdb233802204de76c6f126b2ef8343dd18b21551a70497c0c50eed81bfca605c3240a5469f5",
+             "publicKey": "3056301006072a8648ce3d020106052b8104000a034200048569053d7b483059100b4c914cce0b39ed3d4b8c70419e9a4f3102a6f9ad62606e6c5085767f4fc83dad5cc5c35e70ce7198b8db0e863ac19e4c20b37a503a5e",
+             "signatureIndex": 13,
+             "transaction": {
+               "transactionFee": "701000",
+               "data": "",
+               "type": 1,
+               "sourceAddress": "V4vxZyZ5oR32Vdmj3SFk4SdJ36NRGX",
+               "sourceAmount": "100701000",
+               "txId": "ffc717462162ebc5e8730cc82b225f998c878be9fc47eb251ccc948cf2d2d296",
+               "outputs": [
+                 {
+                   "address": "VAE91zJuku3oiMa7tqZKwo2YQ2UvcD",
+                   "amount": "100000000"
+                 }
+               ]
+             }
+           }
+         }
+       ]
+     }
+   }
+   ```

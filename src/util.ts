@@ -7,7 +7,7 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 import { WritableStreamBuffer } from 'stream-buffers';
-import { Amount, Byte, Transaction } from './transaction';
+import { AddressType, Amount, Byte, Transaction } from './transaction';
 import { AMOUNT_MAX, MULTISIG_ADDRESS_ID, STANDARD_ADDRESS_ID } from './const';
 import { Base59 } from './base59';
 import { Base58 } from './base58';
@@ -99,7 +99,11 @@ export const serializeTransactionEffects = (
     initialSize: 1000,
   });
 
-  stream.write(Buffer.from([tx.type]));
+  if (isValidStandardAddress(tx.sourceAddress)) {
+    stream.write(Buffer.from([AddressType.STANDARD]));
+  } else {
+    throw new Error('unsupported address type');
+  }
 
   // write transaction address
   writeAddress(stream, tx.sourceAddress);
