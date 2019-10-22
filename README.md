@@ -130,9 +130,9 @@ JavaScript libraries for nodecore repo. Demo page for live test is [here](https:
    // sign it
    const signedModelTx = signTransaction(modelTx, keyPair, signatureIndex);
    // serialize back to raw signed transaction
-   const rawSignedTx = trySerializeSignedTransaction(signedModelTx);
+   const rawSignedTx = trySerializeSignedTransaction(signedModelTx); // may throw
    ```
-   You will have to get:
+   You should get this:
    ```json
      {
        "signature": "3045022100bc6508c47500e3cf5e01d4f0c2709602d479d45d486bf244a499df05dbdb233802204de76c6f126b2ef8343dd18b21551a70497c0c50eed81bfca605c3240a5469f5",

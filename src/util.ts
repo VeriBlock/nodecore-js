@@ -7,15 +7,11 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 import { WritableStreamBuffer } from 'stream-buffers';
-import { AddressType, Amount, Byte, Transaction } from './transaction';
-import { AMOUNT_MAX, MULTISIG_ADDRESS_ID, STANDARD_ADDRESS_ID } from './const';
+import { AddressType, Amount, Transaction } from './transaction';
+import { MULTISIG_ADDRESS_ID, STANDARD_ADDRESS_ID } from './const';
 import { Base59 } from './base59';
 import { Base58 } from './base58';
-import {
-  Address,
-  isValidMultisigAddress,
-  isValidStandardAddress,
-} from './address';
+import { isValidMultisigAddress, isValidStandardAddress } from './address';
 import BigNumber from 'bignumber.js';
 
 const bigNumberRightShift = (b: BigNumber, bits: number): BigNumber => {
@@ -128,57 +124,6 @@ export const serializeTransactionEffects = (
   } else {
     throw new Error('buffer error');
   }
-};
-
-export const assertTrue = (condition: boolean, msg: string) => {
-  if (!condition) {
-    throw new Error(msg);
-  }
-};
-
-export const assertInt = (n: number, msg?: string) => {
-  assertTrue(
-    Number.isInteger(n),
-    `${msg ? `[${msg}] ` : ''}should be an integer`
-  );
-};
-
-export const assertPositive = (n: number, msg?: string) => {
-  assertTrue(n > 0, `${msg ? `[${msg}] ` : ''}number should be positive`);
-};
-
-export const assertMaxNumber = (n: number, max: number, msg?: string) => {
-  assertTrue(n < max, `${msg ? `[${msg}] ` : ''}number is > ${max}`);
-};
-
-export const assertNumberInRange = (
-  n: BigNumber,
-  from: BigNumber,
-  to: BigNumber
-) => {
-  assertTrue(
-    n.gte(from) && n.lte(to),
-    `number should be ${from} <= N (${n}) <= ${to}`
-  );
-};
-
-export const assertAddressValid = (addr: Address) => {
-  assertTrue(
-    isValidStandardAddress(addr) || isValidMultisigAddress(addr),
-    'invalid address'
-  );
-};
-
-export const assertByteValid = (byte: Byte) => {
-  assertNumberInRange(
-    new BigNumber(byte),
-    new BigNumber(0),
-    new BigNumber(255)
-  );
-};
-
-export const assertAmountValid = (amount: Amount) => {
-  assertNumberInRange(makeBigNumber(amount), new BigNumber(0), AMOUNT_MAX);
 };
 
 export const makeBigNumber = (amount: Amount): BigNumber => {
