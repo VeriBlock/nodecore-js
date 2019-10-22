@@ -11,7 +11,6 @@ import * as hash from './hash';
 import BigNumber from 'bignumber.js';
 import { WritableStreamBuffer } from 'stream-buffers';
 
-
 module.exports = {
   address,
   transaction,
