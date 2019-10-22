@@ -188,3 +188,12 @@ JavaScript libraries for nodecore repo. Demo page for live test is [here](https:
      }
    }
    ```
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "result": {
+       "success": true
+     },
+     "id": 124
+   }
+   ```
