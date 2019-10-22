@@ -1,6 +1,6 @@
 {
   "name": "nodecore-js",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "JavaScript libraries for veriblock nodecore repo.",
   "scripts": {
     "watch": "tsc -w",
@@ -55,12 +55,12 @@
     "fast-sha256": "^1.1.0",
     "fp-ts": "^2.1.1",
     "io-ts": "^2.0.1",
-    "json-bigint": "^0.3.0",
     "secp256k1": "^3.7.1",
     "stream-buffers": "^3.0.2"
   },
   "devDependencies": {
     "@types/base-x": "^3.0.0",
+    "@types/bignumber.js": "^5.0.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^10.14.20",
     "@types/secp256k1": "^3.5.0",
