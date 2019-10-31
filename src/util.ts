@@ -114,8 +114,9 @@ export const serializeTransactionEffects = (
     writeAmount(stream, o.amount);
   });
   writeVarLenNumberValueToStream(stream, new BigNumber(signatureIndex));
-  // put empty data buffer
-  writeVarLenBufferValueToStream(stream, Buffer.alloc(0));
+
+  // put data buffer
+  writeVarLenBufferValueToStream(stream, Buffer.from(tx.data, 'hex'));
 
   stream.end();
   const result: Buffer | false = stream.getContents();

@@ -55,6 +55,33 @@ export const amountT = new t.Type<BigNumber, string, unknown>(
   a => a.toString()
 );
 
+export const dataT = new t.Type<string, string, unknown>(
+  'data',
+  t.string.is,
+  // `t.success` and `t.failure` are helpers used to build `Either` instances
+  (input, context) => {
+    if (typeof input !== 'undefined') {
+      if (typeof input !== 'string') {
+        return t.failure(input, context, 'not a string');
+      }
+
+      try {
+        Buffer.from(input, 'hex');
+      } catch (e) {
+        return t.failure(
+          input,
+          context,
+          'data can not be non-hexadecimal string'
+        );
+      }
+
+      return t.success(input);
+    }
+    return t.success('');
+  },
+  t.identity
+);
+
 export const signatureIndexT = new t.Type<number, number, unknown>(
   'signatureIndex',
   (input: unknown): input is number => typeof input === 'number',
@@ -100,7 +127,7 @@ export const transactionT = t.exact(
     sourceAmount: amountT,
     outputs: t.array(outputT),
     networkByte: t.union([byteT, t.undefined]),
-    data: t.union([t.string, t.undefined]),
+    data: dataT,
     transactionFee: t.union([amountT, t.undefined]),
     txId: t.union([t.string, t.undefined]),
     type: t.union([t.number, t.undefined]),

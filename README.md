@@ -108,11 +108,13 @@ JavaScript libraries for nodecore repo. Demo page for live test is [here](https:
         sourceAmount: '100701000',
         outputs: [
           {
-            // send here 0.1 VBK
+            // send 1 VBK = 10**8
             address: 'VAE91zJuku3oiMa7tqZKwo2YQ2UvcD',
             amount: '100000000'
           }
-        ]
+        ],
+        // use data field to payload any data as a hex string
+        data: '' 
     }
     ```
    
