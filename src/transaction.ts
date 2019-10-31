@@ -16,6 +16,7 @@ import {
   addressT,
   amountT,
   byteT,
+  dataT,
   outputT,
   signatureIndexT,
   signedTransactionT,
@@ -36,6 +37,7 @@ export enum AddressType {
 
 export type Address = t.TypeOf<typeof addressT>;
 export type Amount = t.TypeOf<typeof amountT>;
+export type Data = t.TypeOf<typeof dataT>;
 export type Byte = t.TypeOf<typeof byteT>;
 export type SignatureIndex = t.TypeOf<typeof signatureIndexT>;
 export type Output = t.TypeOf<typeof outputT>;

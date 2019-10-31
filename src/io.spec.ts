@@ -1,4 +1,4 @@
-import { addressT, amountT, ThrowReporter } from './io';
+import { addressT, amountT, dataT, ThrowReporter } from './io';
 
 describe('address', () => {
   it('valid', () => {
@@ -26,4 +26,16 @@ describe('amount', () => {
   it('negative', () => {
     expect(() => ThrowReporter.report(amountT.decode('-1'))).toThrow();
   });
+});
+
+describe('data', () => {
+  it('valid', () => {
+    expect(() => dataT.decode('001122aabbcc')).not.toThrow();
+  });
+
+  it('not string', () => {
+    expect(() => ThrowReporter.report(dataT.decode(123))).toThrow();
+  });
+
+  // TODO: check hex string
 });
