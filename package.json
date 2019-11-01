@@ -76,6 +76,6 @@
     "webpack-cli": "^3.3.9"
   },
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/"
   }
 }
