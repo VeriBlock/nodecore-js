@@ -1,0 +1,9 @@
+html
+testData
+index.html
+prettier.config.js
+sonar-project.properties
+tsconfig.json
+tslint.json
+webpack.config.js
+yarn.lock

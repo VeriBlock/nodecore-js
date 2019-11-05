@@ -1,7 +1,13 @@
 {
   "name": "@veriblock/nodecore-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript libraries for veriblock nodecore repo.",
+  "files": [
+    "/dist/**.js",
+    "/dist/**.d.ts"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
@@ -32,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VeriBlock/nodecore-js.git"
+    "url": "ssh://git@github.com/VeriBlock/nodecore-js.git"
   },
   "keywords": [
     "js",
@@ -42,8 +48,9 @@
     "browser",
     "lib"
   ],
-  "author": "j0k",
-  "license": "ISC",
+  "author": "warchant",
+  "contributors": ["j0k"],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/VeriBlock/nodecore-js/issues"
   },
