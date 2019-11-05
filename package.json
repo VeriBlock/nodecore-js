@@ -2,6 +2,11 @@
   "name": "@veriblock/nodecore-js",
   "version": "1.0.0",
   "description": "JavaScript libraries for veriblock nodecore repo.",
+  "files": [
+    "/dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
@@ -42,8 +47,9 @@
     "browser",
     "lib"
   ],
-  "author": "j0k",
-  "license": "ISC",
+  "author": "warchant",
+  "contributors": ["j0k"],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/VeriBlock/nodecore-js/issues"
   },
