@@ -1,4 +1,4 @@
-name: Sonarqube
+name: Release
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
     - master
     - develop
     - feature/ci
+  release:
+    types: [published]
 
 jobs:
-  build:
-
+  sonar:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js 12.x
@@ -33,3 +33,22 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build --if-present
+      - name: publish
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish

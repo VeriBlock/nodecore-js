@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "JavaScript libraries for veriblock nodecore repo.",
   "files": [
-    "/dist"
+    "/dist/**.js",
+    "/dist/**.d.ts"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
