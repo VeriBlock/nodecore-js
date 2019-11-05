@@ -5,6 +5,7 @@ on:
     branches:
     - master
     - develop
+    - feature/ci
 
 jobs:
   build:
@@ -32,3 +33,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+    - name: publish
+      run: npm publish
