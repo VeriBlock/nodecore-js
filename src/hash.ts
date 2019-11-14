@@ -6,8 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import do_sha256 from 'fast-sha256';
+import doSha256 from 'fast-sha256';
 
 export const sha256 = (buffer: Buffer): Buffer => {
-  return Buffer.from(do_sha256(buffer));
+  return Buffer.from(doSha256(buffer));
 };

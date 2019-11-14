@@ -18,12 +18,6 @@ jobs:
         node-version: 12.x
         registry-url: https://npm.pkg.github.com/
         scope: '@veriblock'
-    - name: npm install, build
-      run: |
-        npm install
-        npm run build --if-present
-    - name: collect coverage
-      run: npm run test:cov
     - name: npm publish
       run: |
         LATEST=`npm view . version`

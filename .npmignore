@@ -9,3 +9,9 @@ webpack.config.js
 yarn.lock
 *.spec.ts
 *.spec.js
+.scannerwork
+coverage
+.github
+.idea
+*.map
+tsconfig.tsbuildinfo

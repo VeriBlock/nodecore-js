@@ -6,3 +6,5 @@ tsconfig.tsbuildinfo
 coverage
 yarn-error.log
 .scannerwork
+*.map
+*.d.ts

@@ -1,4 +1,4 @@
-import { trimmedByteArrayFromNumber } from './util';
+import { trimmedByteArrayFromNumber } from '../src';
 import BigNumber from 'bignumber.js';
 
 const cases = [

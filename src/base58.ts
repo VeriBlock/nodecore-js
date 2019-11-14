@@ -6,11 +6,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import basex from 'base-x';
+import BaseX from 'base-x';
 
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
-const bs58 = basex(ALPHABET);
+const bs58 = BaseX(ALPHABET);
 
 export class Base58 {
   static encode = (b: Buffer): string => {

@@ -1,0 +1,15 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": ["compat"],
+  "rules": {
+    "compat/compat": "error",
+    "semi": "error"
+  },
+  "env": {
+    "node": true,
+    "browser": true
+  }
+}

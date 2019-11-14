@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Base59 } from './base59';
+import { Base59 } from '../src';
 
 describe('base59 test', () => {
   it('check Java - JS similarity', () => {

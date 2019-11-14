@@ -7,12 +7,16 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 import { WritableStreamBuffer } from 'stream-buffers';
-import { AddressType, Amount, Transaction } from './transaction';
 import { MULTISIG_ADDRESS_ID, STANDARD_ADDRESS_ID } from './const';
 import { Base59 } from './base59';
 import { Base58 } from './base58';
-import { isValidMultisigAddress, isValidStandardAddress } from './address';
+import {
+  AddressType,
+  isValidMultisigAddress,
+  isValidStandardAddress,
+} from './address';
 import BigNumber from 'bignumber.js';
+import { Amount, Transaction } from './types';
 
 const bigNumberRightShift = (b: BigNumber, bits: number): BigNumber => {
   const p = new BigNumber(2).pow(bits);
@@ -45,6 +49,11 @@ export const trimmedByteArrayFromNumber = (n: BigNumber): Buffer => {
   return trimmedByteArray;
 };
 
+export const writeBuffer = (stream: WritableStreamBuffer, b: Buffer): void => {
+  stream.write(Buffer.from([b.length]));
+  stream.write(b);
+};
+
 export const writeVarLenNumberValueToStream = (
   stream: WritableStreamBuffer,
   n: BigNumber
@@ -63,9 +72,16 @@ export const writeVarLenBufferValueToStream = (
   stream.write(n);
 };
 
-export const writeBuffer = (stream: WritableStreamBuffer, b: Buffer): void => {
-  stream.write(Buffer.from([b.length]));
-  stream.write(b);
+export const makeBigNumber = (amount: Amount): BigNumber => {
+  switch (typeof amount) {
+    case 'bigint':
+    case 'string':
+    case 'number':
+    case 'object':
+      return new BigNumber(amount);
+    default:
+      throw new Error('unknown amount type');
+  }
 };
 
 const writeAmount = (stream: WritableStreamBuffer, amount: Amount): void => {
@@ -90,7 +106,7 @@ const writeAddress = (stream: WritableStreamBuffer, address: string): void => {
 export const serializeTransactionEffects = (
   tx: Transaction,
   signatureIndex: number
-) => {
+): Buffer => {
   const stream = new WritableStreamBuffer({
     initialSize: 1000,
   });
@@ -124,18 +140,6 @@ export const serializeTransactionEffects = (
     return result;
   } else {
     throw new Error('buffer error');
-  }
-};
-
-export const makeBigNumber = (amount: Amount): BigNumber => {
-  switch (typeof amount) {
-    case 'bigint':
-    case 'string':
-    case 'number':
-    case 'object':
-      return new BigNumber(amount);
-    default:
-      throw new Error('unknown amount type');
   }
 };
 

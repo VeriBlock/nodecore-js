@@ -6,7 +6,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import { PublicKey } from './crypto';
 import {
   ADDRESS_CHECKSUM_LENGTH,
   ADDRESS_CHECKSUM_START,
@@ -31,6 +30,13 @@ import { sha256 } from './hash';
 import { InvalidChecksumException } from './exception';
 import { Base58 } from './base58';
 
+export enum AddressType {
+  ZERO_UNUSED = 0,
+  STANDARD = 1,
+  PROOF_OF_PROOF = 2,
+  MULTISIG = 3,
+}
+
 const getDataPortionFromAddress = (address: string): string => {
   return address.substr(ADDRESS_DATA_START, ADDRESS_DATA_END + 1);
 };
@@ -39,7 +45,7 @@ const getChecksumPortionFromAddress = (address: string): string => {
   return address.substr(ADDRESS_CHECKSUM_START);
 };
 
-const chopChecksumStandard = (checksum: string): string => {
+export const chopChecksumStandard = (checksum: string): string => {
   if (checksum.length < ADDRESS_CHECKSUM_LENGTH) {
     throw new InvalidChecksumException();
   }
@@ -58,13 +64,13 @@ const chopChecksumMultisig = (checksum: string): string => {
 };
 
 export const isValidStandardAddress = (
-  address: Address | string | null | undefined
+  address: string | null | undefined
 ): boolean => {
   if (!address) {
     return false;
   }
 
-  if (address!.length !== ADDRESS_LENGTH) {
+  if (address.length !== ADDRESS_LENGTH) {
     return false;
   }
 
@@ -80,7 +86,7 @@ export const isValidStandardAddress = (
 };
 
 export const isValidMultisigAddress = (
-  address: Address | string | null | undefined
+  address: string | null | undefined
 ): boolean => {
   if (!address) {
     return false;
@@ -128,23 +134,3 @@ export const isValidMultisigAddress = (
     getChecksumPortionFromMultisigAddress(address)
   );
 };
-
-export const addressFromPublicKey = (
-  publicKey: PublicKey | Buffer
-): Address => {
-  if (publicKey instanceof Buffer) {
-    publicKey = new PublicKey(publicKey);
-  }
-
-  const b58 = Base58.encode(sha256(publicKey.asn1));
-  const slice = b58.slice(ADDRESS_DATA_START, ADDRESS_DATA_END);
-  const address = STARTING_CHAR + slice;
-
-  const checksum = chopChecksumStandard(
-    Base58.encode(sha256(Buffer.from(address)))
-  );
-
-  return address + checksum;
-};
-
-export type Address = string;

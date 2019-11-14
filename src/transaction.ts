@@ -8,43 +8,17 @@
 // tslint:disable:no-any
 import { serializeTransactionEffects } from './util';
 import { sha256 } from './hash';
-import { KeyPair, SHA256withECDSA } from './crypto';
-import * as t from 'io-ts';
-
+import { KeyPair, SHA256withECDSA } from './cryptography';
 import BigNumber from 'bignumber.js';
+import { signedTransactionT, ThrowReporter, transactionT } from './io';
+import { AddressType, isValidStandardAddress } from './address';
 import {
-  addressT,
-  amountT,
-  byteT,
-  dataT,
-  nodecoreKeypairT,
-  outputT,
-  signatureIndexT,
-  signedTransactionT,
-  ThrowReporter,
-  transactionT,
-} from './io';
-import { isValidStandardAddress } from './address';
-
-// tslint:disable-next-line:variable-name
-// const JSONbig = require('json-bigint')({ strict: true, storeAsString: false });
-
-export enum AddressType {
-  ZERO_UNUSED = 0,
-  STANDARD = 1,
-  PROOF_OF_PROOF = 2,
-  MULTISIG = 3,
-}
-
-export type Address = t.TypeOf<typeof addressT>;
-export type Amount = t.TypeOf<typeof amountT>;
-export type Data = t.TypeOf<typeof dataT>;
-export type Byte = t.TypeOf<typeof byteT>;
-export type SignatureIndex = t.TypeOf<typeof signatureIndexT>;
-export type Output = t.TypeOf<typeof outputT>;
-export type Transaction = t.TypeOf<typeof transactionT>;
-export type SignedTransaction = t.TypeOf<typeof signedTransactionT>;
-export type NodecoreKeypair = t.TypeOf<typeof nodecoreKeypairT>;
+  Output,
+  SignatureIndex,
+  SignedTransaction,
+  Transaction,
+} from './types';
+import { Decoder, Encoder } from 'io-ts';
 
 export const getTransactionId = (
   tx: Transaction,
@@ -95,30 +69,31 @@ export const signTransaction = (
   };
 };
 
-const tryDeserialize = (arg: any, schema: any): any => {
+const tryDeserialize = <T extends Decoder<{}, any>>(
+  arg: {},
+  schema: T
+): any => {
   const c = schema.decode(arg);
   ThrowReporter.report(c);
-  return c.right;
+  return c._tag !== 'Left' ? c.right : null;
 };
 
-const trySerialize = (arg: any, schema: any): any => {
+const trySerialize = <T extends Encoder<any, {}>>(arg: {}, schema: T): {} => {
   return schema.encode(arg);
 };
 
 /// signed transaction
-export const tryDeserializeSignedTransaction = (
-  arg: any
-): SignedTransaction => {
+export const tryDeserializeSignedTransaction = (arg: {}): SignedTransaction => {
   return tryDeserialize(arg, signedTransactionT);
 };
-export const trySerializeSignedTransaction = (arg: SignedTransaction) => {
+export const trySerializeSignedTransaction = (arg: SignedTransaction): any => {
   return trySerialize(arg, signedTransactionT);
 };
 
 /// transaction
-export const tryDeserializeTransaction = (arg: any): Transaction => {
+export const tryDeserializeTransaction = (arg: {}): Transaction => {
   return tryDeserialize(arg, transactionT);
 };
-export const trySerializeTransaction = (arg: Transaction) => {
+export const trySerializeTransaction = (arg: Transaction): any => {
   return trySerialize(arg, transactionT);
 };

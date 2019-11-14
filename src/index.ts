@@ -1,24 +1,10 @@
-import * as address from './address';
-import * as transaction from './transaction';
-import * as util from './util';
-import * as crypto from './crypto';
-import * as base58 from './base58';
-import * as base59 from './base59';
-import * as consts from './const';
-import * as hash from './hash';
-
-// external libs
-import BigNumber from 'bignumber.js';
-import { WritableStreamBuffer } from 'stream-buffers';
-
-module.exports = {
-  address,
-  transaction,
-  util,
-  crypto,
-  consts,
-  hash,
-  base58,
-  base59,
-  libs: { BigNumber, WritableStreamBuffer },
-};
+export * from './address';
+export * from './transaction';
+export * from './util';
+export * from './cryptography'; // don't want to clash with built-in crypto module
+export * from './base58';
+export * from './base59';
+export * from './const';
+export * from './hash';
+export * from './types';
+export * from './io';
