@@ -4,14 +4,9 @@ TypeScript libraries for nodecore repo.
 
 ### Install
 
-1. Add this line to your `.npmrc` file ([details](https://github.blog/2019-09-11-proxying-packages-with-github-package-registry-and-other-updates/#introducing-proxy-support-for-npmjs-com)):
-   ```bash
-   registry=https://npm.pkg.github.com/VeriBlock
-   ```
-2. Install package
-   ```bash
-   npm install @veriblock/nodecore-js
-   ```
+```
+yarn add @veriblock/nodecore-js
+```
 
 ## Examples
 
