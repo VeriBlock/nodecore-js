@@ -195,7 +195,7 @@ export const signedTransactionT = t.exact(
 );
 
 // add hexStringT
-export const nodecoreExportT = t.exact(
+export const nodecoreKeypairT = t.exact(
   t.type({
     address: addressT,
     private_key: t.string,
