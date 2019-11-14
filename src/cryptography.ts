@@ -8,9 +8,14 @@
 
 import secp256k1 from 'secp256k1';
 import { sha256 } from './hash';
-import { randomBytes } from 'crypto';
-import { addressFromPublicKey } from './address';
-import { NodecoreKeypair } from './transaction';
+import { chopChecksumStandard } from './address';
+import { Base58 } from './base58';
+import { ADDRESS_DATA_END, ADDRESS_DATA_START, STARTING_CHAR } from './const';
+import { NodecoreKeypair } from './types';
+
+/* eslint-disable */
+const secureRandom = require('secure-random');
+/* eslint-enable */
 
 // prefix which you need to add to an uncompressed public key to get asn1 (java-like) public key
 export const PUBKEY_ASN1_PREFIX = Buffer.from(
@@ -76,7 +81,15 @@ export class PublicKey {
   }
 
   getAddress(): string {
-    return addressFromPublicKey(this);
+    const b58 = Base58.encode(sha256(this.asn1));
+    const slice = b58.slice(ADDRESS_DATA_START, ADDRESS_DATA_END);
+    const address = STARTING_CHAR + slice;
+
+    const checksum = chopChecksumStandard(
+      Base58.encode(sha256(Buffer.from(address)))
+    );
+
+    return address + checksum;
   }
 
   toStringHex(): string {
@@ -91,6 +104,14 @@ export class PublicKey {
     return new PublicKey(Buffer.from(b64, 'base64'));
   }
 }
+
+export const addressFromPublicKey = (publicKey: PublicKey | Buffer): string => {
+  if (publicKey instanceof Buffer) {
+    publicKey = new PublicKey(publicKey);
+  }
+
+  return publicKey.getAddress();
+};
 
 export class PrivateKey {
   // stores asn1 encoded private key as [asn1 prefix + 32 byte private key]
@@ -177,7 +198,7 @@ export class Signature {
 export class KeyPair {
   constructor(readonly publicKey: PublicKey, readonly privateKey: PrivateKey) {}
 
-  static fromPrivateKey(privateKey: PrivateKey | Buffer) {
+  static fromPrivateKey(privateKey: PrivateKey | Buffer): KeyPair {
     if (privateKey instanceof Buffer) {
       privateKey = new PrivateKey(privateKey);
     }
@@ -187,15 +208,15 @@ export class KeyPair {
   }
 
   static generate(entropy?: Buffer): KeyPair {
-    if (!entropy) {
-      entropy = randomBytes(32);
+    if (typeof entropy === 'undefined') {
+      entropy = secureRandom(32);
     }
 
-    if (entropy.length < 32) {
+    if (entropy!.length < 32) {
       throw new Error('not enough entropy, supply 32 bytes or more');
     }
 
-    const priv = new PrivateKey(sha256(entropy));
+    const priv = new PrivateKey(sha256(entropy!));
     const pub = priv.derivePublicKey();
 
     return new KeyPair(pub, priv);
@@ -206,11 +227,13 @@ export class KeyPair {
     const pub = this.publicKey.toStringHex().toUpperCase();
     const priv = this.privateKey.toStringHex().toUpperCase();
 
+    /* eslint-disable */
     // private_key can be used for nodecore-cli command: importprivatekey
     return {
       address: addr,
       private_key: '40' + priv + pub,
     };
+    /* eslint-enable */
   }
 
   static importFromNodecorePrivateKey(privateKey: string): KeyPair {

@@ -12,8 +12,8 @@ import {
   tryDeserializeSignedTransaction,
   tryDeserializeTransaction,
   trySerializeSignedTransaction,
-} from './transaction';
-import { KeyPair } from './crypto';
+  KeyPair,
+} from '../src';
 
 const PRIVATE_KEY = Buffer.from(
   '303E020100301006072A8648CE3D020106052B8104000A04273025020101042017869E398A7ACD18729B8FC6D47DCFE9C1A2B5871334D00471EFC3985762FF8F',

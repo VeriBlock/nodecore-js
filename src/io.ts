@@ -1,10 +1,8 @@
 import * as t from 'io-ts';
 import { isValidStandardAddress } from './address';
-import { PrivateKey, PublicKey, Signature } from './crypto';
+import { PrivateKey, PublicKey, Signature } from './cryptography';
 import BigNumber from 'bignumber.js';
 import { Reporter } from 'io-ts/lib/Reporter';
-import { isLeft } from 'fp-ts/lib/Either';
-import { PathReporter } from 'io-ts/lib/PathReporter';
 import { AMOUNT_MAX } from './const';
 
 export const addressT = new t.Type<string, string, unknown>(
@@ -194,19 +192,20 @@ export const signedTransactionT = t.exact(
   })
 );
 
-// add hexStringT
+/* eslint-disable */
 export const nodecoreKeypairT = t.exact(
   t.type({
     address: addressT,
     private_key: t.string,
   })
 );
+/* eslint-enable */
 
 // tslint:disable-next-line:variable-name
 export const ThrowReporter: Reporter<void> = {
   report: validation => {
-    if (isLeft(validation)) {
-      throw new Error(PathReporter.report(validation).join('\n'));
+    if (validation._tag === 'Left') {
+      throw new Error(validation.left.join('\n'));
     }
   },
 };

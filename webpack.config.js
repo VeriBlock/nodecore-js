@@ -2,8 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: './src/index.ts',
-  devtool: 'inline-source-map',
-  mode : 'development',
+  mode: 'production',
   module: {
     rules: [
       {
@@ -14,13 +13,13 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     library: 'VeriBlock',
     libraryTarget: 'umd',
-    filename: 'bundle.dev.js',
-    path: path.resolve(__dirname, 'html/dist'),
+    filename: 'browser.veriblock.js',
+    path: path.resolve(__dirname, 'build/'),
   },
   node: {
     Buffer: true,
