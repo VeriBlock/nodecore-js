@@ -10,6 +10,7 @@ import secp256k1 from 'secp256k1';
 import { sha256 } from './hash';
 import { randomBytes } from 'crypto';
 import { addressFromPublicKey } from './address';
+import { NodecoreKeypair } from './transaction';
 
 // prefix which you need to add to an uncompressed public key to get asn1 (java-like) public key
 export const PUBKEY_ASN1_PREFIX = Buffer.from(
@@ -198,6 +199,24 @@ export class KeyPair {
     const pub = priv.derivePublicKey();
 
     return new KeyPair(pub, priv);
+  }
+
+  exportToNodecore(): NodecoreKeypair {
+    const addr = this.publicKey.getAddress();
+    const pub = this.publicKey.toStringHex().toUpperCase();
+    const priv = this.privateKey.toStringHex().toUpperCase();
+
+    // private_key can be used for nodecore-cli command: importprivatekey
+    return {
+      address: addr,
+      private_key: '40' + priv + pub,
+    };
+  }
+
+  static importFromNodecorePrivateKey(privateKey: string): KeyPair {
+    const priv = Buffer.from(privateKey.substr(2, 128), 'hex');
+
+    return KeyPair.fromPrivateKey(priv);
   }
 }
 
