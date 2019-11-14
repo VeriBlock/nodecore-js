@@ -113,7 +113,6 @@ export const addressFromPublicKey = (publicKey: PublicKey | Buffer): string => {
   return publicKey.getAddress();
 };
 
-
 export class PrivateKey {
   // stores asn1 encoded private key as [asn1 prefix + 32 byte private key]
   private readonly _full: Buffer;
