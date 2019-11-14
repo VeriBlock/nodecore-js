@@ -194,6 +194,15 @@ export const signedTransactionT = t.exact(
   })
 );
 
+// add hexStringT
+export const nodecoreExportT = t.exact(
+  t.type({
+    address: addressT,
+    private_key: t.string,
+  })
+);
+export type NodecoreExport = t.TypeOf<typeof nodecoreExportT>;
+
 // tslint:disable-next-line:variable-name
 export const ThrowReporter: Reporter<void> = {
   report: validation => {
