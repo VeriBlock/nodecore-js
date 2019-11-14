@@ -4,9 +4,18 @@ TypeScript libraries for nodecore repo.
 
 ### Install
 
-```
+**Node:**
+```bash
 yarn add @veriblock/nodecore-js
 ```
+
+**Browser:**
+```bash
+git clone https://github.com/VeriBlock/nodecore-js
+yarn
+yarn build:browser
+```
+Bundle path: `./build/browser.veriblock.js`
 
 ## Examples
 

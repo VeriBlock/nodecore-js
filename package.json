@@ -1,21 +1,22 @@
 {
   "name": "@veriblock/nodecore-js",
-  "version": "1.1.1",
-  "description": "JavaScript libraries for veriblock nodecore repo.",
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "version": "1.1.2",
+  "description": "JavaScript/TypeScript libraries for veriblock nodecore repo.",
+  "main": "./build/src/index.js",
+  "types": "./build/src/index.d.ts",
   "files": [
-    "dist/src"
+    "./build/node/src"
   ],
   "private": false,
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
+    "build:browser": "webpack-cli",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
     "lint": "eslint -c .eslintrc_ts.json src --ext .ts",
-    "lint:compat": "yarn build && eslint -c .eslintrc_compat.json dist --ext .js",
+    "lint:compat": "yarn build && eslint -c .eslintrc_compat.json build/node --ext .js",
     "fix": "gts fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -85,6 +86,8 @@
     "ts-loader": "^6.2.0",
     "tsc": "^1.20150623.0",
     "tslint": "^5.20.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }

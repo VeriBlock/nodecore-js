@@ -8,3 +8,5 @@ yarn-error.log
 .scannerwork
 *.map
 *.d.ts
+build
+package-lock.json
