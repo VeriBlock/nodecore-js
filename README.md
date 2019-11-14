@@ -15,7 +15,11 @@ git clone https://github.com/VeriBlock/nodecore-js
 yarn
 yarn build:browser
 ```
-Bundle path: `./build/browser.veriblock.js`
+Bundle path: `./build/browser.veriblock.js`.
+All functions start with `VeriBlock`. Example: 
+```
+var kp = VeriBlock.KeyPair.generate()
+```
 
 ## Examples
 
