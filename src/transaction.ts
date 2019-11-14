@@ -17,6 +17,7 @@ import {
   amountT,
   byteT,
   dataT,
+  nodecoreKeypairT,
   outputT,
   signatureIndexT,
   signedTransactionT,
@@ -43,6 +44,7 @@ export type SignatureIndex = t.TypeOf<typeof signatureIndexT>;
 export type Output = t.TypeOf<typeof outputT>;
 export type Transaction = t.TypeOf<typeof transactionT>;
 export type SignedTransaction = t.TypeOf<typeof signedTransactionT>;
+export type NodecoreKeypair = t.TypeOf<typeof nodecoreKeypairT>;
 
 export const getTransactionId = (
   tx: Transaction,

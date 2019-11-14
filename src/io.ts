@@ -201,7 +201,6 @@ export const nodecoreKeypairT = t.exact(
     private_key: t.string,
   })
 );
-export type NodecoreKeypair = t.TypeOf<typeof nodecoreExportT>;
 
 // tslint:disable-next-line:variable-name
 export const ThrowReporter: Reporter<void> = {
