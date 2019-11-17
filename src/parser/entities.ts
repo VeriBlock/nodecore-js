@@ -1,24 +1,76 @@
-import { ReadableStreamBuffer } from 'stream-buffers';
-import { Uint16Face, Uint32Face, Uint8Face, Int, Int16Face } from '@1-corp/fixed-size-numbers-ts/lib/Interfaces';
 import { readSingleByteLenValue, readVarLenValue } from './utils';
-import { HASH256_SIZE, MAX_LAYER_COUNT_MERKLE, MAX_MERKLE_BYTES, MAX_RAW_TX_SIZE_VERI_BLOCK_POP_TX, MAX_SIGNATURE_SIZE, PUBLIC_KEY_SIZE, VERI_BLOCK_POP_TX, ADDRESS_SIZE, BASE58_ALPHABET, BASE59_ALPHABET, PREVIOUS_BLOCK_LENGTH, PREVIOUS_KEYSTONE_LENGTH, VERIBLOCK_MERKLE_ROOT_LENGTH, MAX_RAWTX_SIZE, BTC_HEADER_SIZE, MAX_CONTEXT_COUNT } from './const';
-import { ReadStream } from './stream';
-import { Uint8, Uint32 } from '@1-corp/fixed-size-numbers-ts/lib/Uint';
-import { Base58, Base59, sha256 } from '../.'
-import BigNumber from 'bignumber.js';
-import { Int32, Int16 } from '@1-corp/fixed-size-numbers-ts/lib/Int';
+import {
+  ADDRESS_SIZE,
+  BTC_HEADER_SIZE,
+  HASH256_SIZE,
+  MAX_CONTEXT_COUNT,
+  MAX_LAYER_COUNT_MERKLE,
+  MAX_MERKLE_BYTES,
+  MAX_RAWTX_SIZE,
+  MAX_RAWTX_SIZE_VBK_POP_TX,
+  MAX_SIGNATURE_SIZE,
+  PREVIOUS_BLOCK_LENGTH,
+  PUBLIC_KEY_SIZE,
+  VBK_HEADER_SIZE,
+  VBK_MERKLE_ROOT_LENGTH,
+} from './const';
+import { ReadStream, WriteStream } from './stream';
+import { AddressType, Base58, Base59, sha256 } from '../.';
 
-export type VBlakeHash = Buffer;
-export type Sha256Hash = Buffer;
-export type Short = Int16Face;
-export type Byte = Uint8Face;
+export type Int = number;
+export type Short = number;
+export type Byte = number;
+
+export class Sha256Hash {
+  readonly data!: Buffer;
+
+  constructor(data: Buffer) {
+    this.data = data;
+  }
+
+  static read(stream: ReadStream, len: number): Sha256Hash {
+    return new Sha256Hash(stream.read(len));
+  }
+
+  static fromHex(hex: string): Sha256Hash {
+    return new Sha256Hash(Buffer.from(hex, 'hex'));
+  }
+}
+
+export class VBlakeHash {
+  readonly data!: Buffer;
+  readonly length!: number;
+
+  constructor(data: Buffer) {
+    this.data = data;
+    this.length = data.length;
+  }
+
+  trim(len: number): VBlakeHash {
+    if (this.data.length < len) {
+      throw new Error(
+        `VBlakeHash: can not trim more than ${this.data.length}. Requested ${len}.`
+      );
+    }
+    const sub = this.data.slice(this.data.length - len);
+    return new VBlakeHash(sub);
+  }
+
+  static read(stream: ReadStream): VBlakeHash {
+    return new VBlakeHash(stream.read(PREVIOUS_BLOCK_LENGTH));
+  }
+
+  static fromHex(hex: string): VBlakeHash {
+    return new VBlakeHash(Buffer.from(hex, 'hex'));
+  }
+}
 
 export class BtcTx {
   readonly raw!: Buffer;
 
   static read(stream: ReadStream): BtcTx {
-    let raw = readVarLenValue(stream, MAX_RAWTX_SIZE, 0);
-    return { raw }
+    const raw = readVarLenValue(stream, 0, MAX_RAWTX_SIZE);
+    return { raw } as BtcTx;
   }
 }
 
@@ -31,21 +83,39 @@ export class BtcBlock {
   readonly nonce!: Int;
 
   static read(stream: ReadStream): BtcBlock {
-    let version = stream.readInt32LE();
-    let previousBlock = readSingleByteLenValue(stream, HASH256_SIZE, HASH256_SIZE);
-    let merkleRoot = readSingleByteLenValue(stream, HASH256_SIZE, HASH256_SIZE);
-    let timestamp = stream.readInt32LE();
-    let bits = stream.readInt32LE();
-    let nonce = stream.readInt32LE();
+    const version = stream.readInt32LE();
+    const previousBlock = readSingleByteLenValue(
+      stream,
+      HASH256_SIZE,
+      HASH256_SIZE
+    );
+    const merkleRoot = readSingleByteLenValue(
+      stream,
+      HASH256_SIZE,
+      HASH256_SIZE
+    );
+    const timestamp = stream.readInt32LE();
+    const bits = stream.readInt32LE();
+    const nonce = stream.readInt32LE();
 
     return {
-      version: Int32(version),
+      version,
       previousBlock,
       merkleRoot,
-      timestamp: Int32(timestamp),
-      bits: Int32(bits),
-      nonce: Int32(nonce),
-    };
+      timestamp,
+      bits,
+      nonce,
+    } as BtcBlock;
+  }
+
+  static readWithLength(stream: ReadStream): BtcBlock {
+    const bytes: Buffer = readSingleByteLenValue(
+      stream,
+      BTC_HEADER_SIZE,
+      BTC_HEADER_SIZE
+    );
+    const blockStream = new ReadStream(bytes);
+    return BtcBlock.read(blockStream);
   }
 }
 
@@ -58,22 +128,33 @@ export class MerklePath {
     const merkleBytes = readVarLenValue(stream, 0, MAX_MERKLE_BYTES);
     const readable = new ReadStream(merkleBytes);
 
-    const indexValue = readSingleByteLenValue(readable, 4, 4).readInt32BE(0)
-    const index = Uint8(indexValue);
+    const index = readSingleByteLenValue(readable, 4, 4).readInt32BE(0);
     const numLayers = readSingleByteLenValue(readable, 4, 4).readInt32BE(0);
-    if(!Number.isInteger(numLayers) || numLayers < 0 || numLayers > MAX_LAYER_COUNT_MERKLE) {
-      throw new Error(`Unexpected numLayers: 0 <= ${numLayers} <= ${MAX_LAYER_COUNT_MERKLE}`);
+    if (
+      !Number.isInteger(numLayers) ||
+      numLayers < 0 ||
+      numLayers > MAX_LAYER_COUNT_MERKLE
+    ) {
+      throw new Error(
+        `Unexpected numLayers: 0 <= ${numLayers} <= ${MAX_LAYER_COUNT_MERKLE}`
+      );
     }
 
-    const sizeOfSizeBottomData = readSingleByteLenValue(readable, 4, 4).readInt32BE(0);
+    const sizeOfSizeBottomData = readSingleByteLenValue(
+      readable,
+      4,
+      4
+    ).readInt32BE(0);
     const sizeBottomData = readable.read(sizeOfSizeBottomData).readInt32BE(0);
 
-    if(sizeBottomData !== HASH256_SIZE) {
-      throw new Error(`Unexpected sizeBottomData: ${sizeBottomData} !== ${HASH256_SIZE}`);
+    if (sizeBottomData !== HASH256_SIZE) {
+      throw new Error(
+        `Unexpected sizeBottomData: ${sizeBottomData} !== ${HASH256_SIZE}`
+      );
     }
 
     const layers: Sha256Hash[] = [];
-    for(let i=0; i < numLayers ; i++){
+    for (let i = 0; i < numLayers; i++) {
       const hash = readSingleByteLenValue(readable, HASH256_SIZE, HASH256_SIZE);
       layers.push(hash);
     }
@@ -82,7 +163,7 @@ export class MerklePath {
       index,
       subject,
       layers,
-    } as MerklePath
+    } as MerklePath;
   }
 }
 
@@ -97,33 +178,50 @@ export class VbkBlock {
   readonly difficulty!: Int;
   readonly nonce!: Int;
 
+  getHash(): VBlakeHash {
+    const stream = new WriteStream(VBK_HEADER_SIZE);
+    stream.writeInt32BE(this.height);
+    stream.writeInt16BE(this.version);
+    stream.write(this.previousBlock.data);
+    stream.write(this.previousKeystone.data);
+    stream.write(this.secondPreviousKeystone.data);
+    stream.write(this.merkleRoot.data);
+    stream.writeInt32BE(this.timestamp);
+    stream.writeInt32BE(this.difficulty);
+    stream.writeInt32BE(this.nonce);
+  }
+
   static read(stream: ReadStream): VbkBlock {
-    let height = stream.readInt32BE();
-    let version = stream.readInt16BE();
-    let previousBlock = stream.read(PREVIOUS_BLOCK_LENGTH);
-    let previousKeystone = stream.read(PREVIOUS_KEYSTONE_LENGTH);
-    let secondPreviousKeystone = stream.read(PREVIOUS_KEYSTONE_LENGTH);
-    let merkleRoot = stream.read(VERIBLOCK_MERKLE_ROOT_LENGTH);
-    let timestamp = stream.readInt32BE();
-    let difficulty = stream.readInt32BE();
-    let nonce = stream.readInt32BE()
+    const height = stream.readInt32BE();
+    const version = stream.readInt16BE();
+    const previousBlock = VBlakeHash.read(stream);
+    const previousKeystone = VBlakeHash.read(stream);
+    const secondPreviousKeystone = VBlakeHash.read(stream);
+    const merkleRoot = Sha256Hash.read(stream, VBK_MERKLE_ROOT_LENGTH);
+    const timestamp = stream.readInt32BE();
+    const difficulty = stream.readInt32BE();
+    const nonce = stream.readInt32BE();
 
     return {
-      height: Int32(height),
-      version: Int16(version),
+      height,
+      version,
       previousBlock,
       previousKeystone,
       secondPreviousKeystone,
       merkleRoot,
-      timestamp: Int32(timestamp),
-      difficulty: Int32(difficulty),
-      nonce: Int32(nonce),
-    }
+      timestamp,
+      difficulty,
+      nonce,
+    } as VbkBlock;
   }
 }
 
+export enum TxType {
+  VBK_TX = 0x01,
+  VBK_POP_TX = 0x02,
+}
+
 export class VbkPopTx {
-  readonly id!: Buffer;
   readonly address!: Address;
   readonly publishedBlock!: VbkBlock;
   readonly bitcoinTransaction!: BtcTx;
@@ -132,38 +230,57 @@ export class VbkPopTx {
   readonly blockOfProofContext!: BtcBlock[];
   readonly signature!: Buffer;
   readonly publicKey!: Buffer;
-  readonly networkByte!: Byte;
+  readonly networkByte?: Byte;
 
-  static read(stream: ReadStream) : VbkPopTx {
-    let rawTx = readVarLenValue(stream, MAX_RAW_TX_SIZE_VERI_BLOCK_POP_TX);
-    let signature = readSingleByteLenValue(stream, MAX_SIGNATURE_SIZE, 0);
-    let publicKey = readSingleByteLenValue(stream, PUBLIC_KEY_SIZE, PUBLIC_KEY_SIZE);
+  static read(stream: ReadStream): VbkPopTx {
+    const rawTx = readVarLenValue(stream, 0, MAX_RAWTX_SIZE_VBK_POP_TX);
+    const signature = readSingleByteLenValue(
+      stream,
+      MAX_SIGNATURE_SIZE,
+      MAX_SIGNATURE_SIZE
+    );
+    const publicKey = readSingleByteLenValue(
+      stream,
+      PUBLIC_KEY_SIZE,
+      PUBLIC_KEY_SIZE
+    );
 
-    let txStream = new ReadStream(rawTx);
+    const txStream = new ReadStream(rawTx);
 
-    let networkByte;
-    let networkOrType = txStream.readInt8();
-    if (networkOrType == VERI_BLOCK_POP_TX) {
-      networkByte = null;
-    } else {
+    let networkByte = undefined;
+    const networkOrType = txStream.readInt8();
+    if (networkOrType !== TxType.VBK_POP_TX) {
       networkByte = networkOrType;
-      txStream.readInt8();
+      txStream.readInt8(); // TODO: just skip 1 byte?
     }
 
-    let address = Address.read(txStream);
-    let publishedBlock = VbkBlock.read(txStream);
-    let bitcoinTransaction = BtcTx.read(txStream);
-    let merklePath = MerklePath.read(txStream, sha256(sha256(bitcoinTransaction.raw)));
-    let blockOfProof = readSingleByteLenValue(txStream, BTC_HEADER_SIZE, BTC_HEADER_SIZE);
+    const address = Address.read(txStream);
+    const publishedBlock = VbkBlock.read(txStream);
+    const bitcoinTransaction = BtcTx.read(txStream);
+    const merklePath = MerklePath.read(
+      txStream,
+      new Sha256Hash(sha256(sha256(bitcoinTransaction.raw)))
+    );
+    const blockOfProof = BtcBlock.readWithLength(txStream);
 
-    let contextCount = readSingleByteLenValue(txStream, MAX_CONTEXT_COUNT, 0).readInt32BE(0)
-    if (contextCount < 0 || contextCount > MAX_CONTEXT_COUNT) {
-      throw new Error(`Unexpected context count: ${contextCount} (expected a value between 0 and ${MAX_CONTEXT_COUNT})`)
+    const contextCount = readSingleByteLenValue(
+      txStream,
+      0,
+      MAX_CONTEXT_COUNT
+    ).readInt32BE(0);
+    if (
+      !Number.isInteger(contextCount) ||
+      contextCount < 0 ||
+      contextCount > MAX_CONTEXT_COUNT
+    ) {
+      throw new Error(
+        `Unexpected context count: ${contextCount} (expected a value between 0 and ${MAX_CONTEXT_COUNT})`
+      );
     }
 
-    let contextBlocks = [];
+    const blockOfProofContext: BtcBlock[] = [];
     for (let i = 0; i < contextCount; i++) {
-      contextBlocks.push(readSingleByteLenValue(txStream, BTC_HEADER_SIZE, BTC_HEADER_SIZE))
+      blockOfProofContext.push(BtcBlock.readWithLength(txStream));
     }
 
     return {
@@ -172,9 +289,11 @@ export class VbkPopTx {
       bitcoinTransaction,
       merklePath,
       blockOfProof,
-      contextBlocks,
-    }
-
+      blockOfProofContext,
+      signature,
+      publicKey,
+      networkByte,
+    };
   }
 }
 
@@ -183,14 +302,18 @@ export class Address {
   readonly address!: string;
 
   static read(stream: ReadStream): Address {
-    let addressType = stream.readInt8();
-    let addressBytes = readSingleByteLenValue(stream, ADDRESS_SIZE, 0);
-    if (addressType == 1) {
-      let address = Base58.encode(addressBytes);
+    const addressType = stream.readInt8();
+    const addressBytes = readSingleByteLenValue(
+      stream,
+      ADDRESS_SIZE,
+      ADDRESS_SIZE
+    );
+    if (addressType === AddressType.STANDARD) {
+      const address = Base58.encode(addressBytes);
       return { address };
     }
 
-    let address = Base59.encode(addressBytes);
-    return { address }
+    const address = Base59.encode(addressBytes);
+    return { address } as Address;
   }
 }

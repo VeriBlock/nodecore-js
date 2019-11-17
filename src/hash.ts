@@ -11,3 +11,8 @@ import doSha256 from 'fast-sha256';
 export const sha256 = (buffer: Buffer): Buffer => {
   return Buffer.from(doSha256(buffer));
 };
+
+export const blake2s = (buffer: Buffer): Buffer => {
+  // TODO: implement
+  return Buffer.from(buffer);
+};

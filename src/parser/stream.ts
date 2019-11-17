@@ -81,3 +81,64 @@ export class ReadStream {
     }
   }
 }
+
+export class WriteStream {
+  private pos = 0;
+  readonly data: Buffer;
+
+  constructor(size: number) {
+    if (size <= 0) {
+      throw new Error(`invalid size: ${size}`);
+    }
+
+    this.data = Buffer.alloc(size);
+  }
+
+  position(): number {
+    return this.pos;
+  }
+
+  reset(): void {
+    this.pos = 0;
+  }
+
+  clear(): void {
+    for (let i = 0; i < this.data.length; i++) {
+      this.data[i] = 0;
+    }
+  }
+
+  remaining(): number {
+    return this.data.length - this.pos;
+  }
+
+  hasMore(bytes: number): boolean {
+    return this.remaining() >= bytes;
+  }
+
+  write(buf: Buffer): void {
+    if (!this.hasMore(buf.length)) {
+      throw new Error(`WriteStream: buffer overflow`);
+    }
+
+    for (let i = 0; i < buf.length; i++) {
+      this.data[this.pos + i] = buf[i];
+    }
+    this.pos += buf.length;
+  }
+
+  writeInt32BE(n: number): void {
+    this.data.writeInt32BE(n, this.pos);
+    this.pos += 4;
+  }
+
+  writeInt16BE(n: number): void {
+    this.data.writeInt16BE(n, this.pos);
+    this.pos += 2;
+  }
+
+  writeInt8(n: number): void {
+    this.data.writeInt8(n, this.pos);
+    this.pos += 1;
+  }
+}

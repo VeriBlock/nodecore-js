@@ -1,4 +1,4 @@
-import { ReadStream } from '../../src/parser';
+import { ReadStream, WriteStream } from '../../src/parser';
 
 describe('read stream', () => {
   it('read', () => {
@@ -18,7 +18,7 @@ describe('read stream', () => {
     expect(() => stream.read(5)).toThrow();
   });
 
-  it('numbers', ()=>{
+  it('numbers', () => {
     const stream = new ReadStream(Buffer.from([0xa, 0xb, 0xc, 0xd]));
 
     expect(stream.readInt8()).toEqual(0xa);
@@ -39,7 +39,7 @@ describe('read stream', () => {
     expect(stream.readInt32LE()).toEqual(0x0d0c0b0a);
   });
 
-  it('negative', ()=>{
+  it('negative', () => {
     // -1
     const stream = new ReadStream(Buffer.from([0xff, 0xff, 0xff, 0xff]));
 
@@ -47,5 +47,27 @@ describe('read stream', () => {
     expect(() => stream.readInt32BE()).toThrow();
     stream.reset();
     expect(stream.readInt32BE()).toEqual(-1);
-  })
+  });
+});
+
+describe('write stream', () => {
+  it('write', () => {
+    const stream = new WriteStream(8);
+    stream.write(Buffer.from([1]));
+    stream.write(Buffer.from([2, 3]));
+    stream.write(Buffer.from([4, 5, 6]));
+    expect(stream.data).toEqual(Buffer.from([1, 2, 3, 4, 5, 6, 0, 0]));
+    expect(() => stream.write(Buffer.from([1, 1, 1, 1, 1]))).toThrow();
+  });
+
+  it('numbers', () => {
+    const stream = new WriteStream(5);
+
+    stream.writeInt8(5);
+    expect(stream.data).toEqual(Buffer.from([5, 0, 0, 0, 0]));
+    stream.writeInt16BE(-32768);
+    expect(stream.data).toEqual(Buffer.from([5, 0x80, 0, 0, 0]));
+    stream.writeInt16BE(32767);
+    expect(stream.data).toEqual(Buffer.from([5, 0x80, 0, 0x7f, 0xff]));
+  });
 });
