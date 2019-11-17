@@ -6,16 +6,18 @@ TypeScript libraries for nodecore repo.
 
 **Node:**
 ```bash
+# Yarn
 yarn add @veriblock/nodecore-js
+
+# NPM
+npm install --save @veriblock/nodecore-js
 ```
 
 **Browser:**
-```bash
-git clone https://github.com/VeriBlock/nodecore-js
-yarn
-yarn build:browser
+```html
+<scrit src="https://unpkg.com/@veriblock/nodecore-js/build/browser.veriblock.js"></script>
 ```
-Bundle path: `./build/browser.veriblock.js`.
+
 All functions start with `VeriBlock`. Example: 
 ```
 var kp = VeriBlock.KeyPair.generate()
