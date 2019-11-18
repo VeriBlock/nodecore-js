@@ -15,7 +15,7 @@ import {
   VBK_MERKLE_ROOT_LENGTH,
 } from './const';
 import { ReadStream, WriteStream } from './stream';
-import { AddressType, Base58, Base59, sha256 } from '../.';
+import { AddressType, Base58, Base59, blake2s, sha256 } from '../.';
 
 export type Int = number;
 export type Short = number;
@@ -34,6 +34,10 @@ export class Sha256Hash {
 
   static fromHex(hex: string): Sha256Hash {
     return new Sha256Hash(Buffer.from(hex, 'hex'));
+  }
+
+  reverse(): Buffer {
+    return Buffer.from(this.data.reverse());
   }
 }
 
@@ -75,37 +79,39 @@ export class BtcTx {
 }
 
 export class BtcBlock {
-  readonly version!: Int;
-  readonly previousBlock!: Sha256Hash;
-  readonly merkleRoot!: Sha256Hash;
-  readonly timestamp!: Int;
-  readonly bits!: Int;
-  readonly nonce!: Int;
+  constructor(
+    readonly version: Int,
+    readonly previousBlock: Sha256Hash,
+    readonly merkleRoot: Sha256Hash,
+    readonly timestamp: Int,
+    readonly bits: Int,
+    readonly nonce: Int
+  ) {}
+
+  getHash(): Sha256Hash {
+    return new Sha256Hash(sha256(sha256(this.serialize())));
+  }
+
+  serialize(): Buffer {
+    const stream = new WriteStream(BTC_HEADER_SIZE);
+    stream.writeInt32LE(this.version);
+    stream.write(this.previousBlock.reverse());
+    stream.write(this.merkleRoot.reverse());
+    stream.writeInt32LE(this.timestamp);
+    stream.writeInt32LE(this.bits);
+    stream.writeInt32LE(this.nonce);
+    return stream.data;
+  }
 
   static read(stream: ReadStream): BtcBlock {
     const version = stream.readInt32LE();
-    const previousBlock = readSingleByteLenValue(
-      stream,
-      HASH256_SIZE,
-      HASH256_SIZE
-    );
-    const merkleRoot = readSingleByteLenValue(
-      stream,
-      HASH256_SIZE,
-      HASH256_SIZE
-    );
+    const previousBlock = Sha256Hash.read(stream, HASH256_SIZE);
+    const merkleRoot = Sha256Hash.read(stream, HASH256_SIZE);
     const timestamp = stream.readInt32LE();
     const bits = stream.readInt32LE();
     const nonce = stream.readInt32LE();
 
-    return {
-      version,
-      previousBlock,
-      merkleRoot,
-      timestamp,
-      bits,
-      nonce,
-    } as BtcBlock;
+    // TODO: implement
   }
 
   static readWithLength(stream: ReadStream): BtcBlock {
@@ -123,6 +129,34 @@ export class MerklePath {
   readonly layers!: Sha256Hash[];
   readonly subject!: Sha256Hash;
   readonly index!: Int;
+
+  static fromCompact(compact: string): MerklePath {
+    const parts = compact.split(':');
+
+    if (parts.length <= 3) {
+      throw new Error(`invalid compact format #1`);
+    }
+
+    const treeIndex = Number.parseInt(parts[0], 10);
+    const index = Number.parseInt(parts[1], 10);
+
+    if (treeIndex < 0 || index < 0) {
+      throw new Error(`invalid compact format #2`);
+    }
+
+    const subject = Sha256Hash.fromHex(parts[2]);
+
+    const layers: Sha256Hash[] = [];
+    for (let i = 3; i < parts.length; i++) {
+      layers.push(Sha256Hash.fromHex(parts[i]));
+    }
+
+    return {
+      layers,
+      subject,
+      index,
+    };
+  }
 
   static read(stream: ReadStream, subject: Sha256Hash): MerklePath {
     const merkleBytes = readVarLenValue(stream, 0, MAX_MERKLE_BYTES);
@@ -155,7 +189,7 @@ export class MerklePath {
 
     const layers: Sha256Hash[] = [];
     for (let i = 0; i < numLayers; i++) {
-      const hash = readSingleByteLenValue(readable, HASH256_SIZE, HASH256_SIZE);
+      const hash = Sha256Hash.read(readable, HASH256_SIZE);
       layers.push(hash);
     }
 
@@ -179,6 +213,10 @@ export class VbkBlock {
   readonly nonce!: Int;
 
   getHash(): VBlakeHash {
+    return new VBlakeHash(blake2s(this.serialize()));
+  }
+
+  serialize(): Buffer {
     const stream = new WriteStream(VBK_HEADER_SIZE);
     stream.writeInt32BE(this.height);
     stream.writeInt16BE(this.version);
@@ -189,6 +227,7 @@ export class VbkBlock {
     stream.writeInt32BE(this.timestamp);
     stream.writeInt32BE(this.difficulty);
     stream.writeInt32BE(this.nonce);
+    return stream.data;
   }
 
   static read(stream: ReadStream): VbkBlock {
@@ -234,11 +273,7 @@ export class VbkPopTx {
 
   static read(stream: ReadStream): VbkPopTx {
     const rawTx = readVarLenValue(stream, 0, MAX_RAWTX_SIZE_VBK_POP_TX);
-    const signature = readSingleByteLenValue(
-      stream,
-      MAX_SIGNATURE_SIZE,
-      MAX_SIGNATURE_SIZE
-    );
+    const signature = readSingleByteLenValue(stream, 0, MAX_SIGNATURE_SIZE);
     const publicKey = readSingleByteLenValue(
       stream,
       PUBLIC_KEY_SIZE,
@@ -293,7 +328,7 @@ export class VbkPopTx {
       signature,
       publicKey,
       networkByte,
-    };
+    } as VbkPopTx;
   }
 }
 

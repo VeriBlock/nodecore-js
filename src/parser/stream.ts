@@ -127,6 +127,16 @@ export class WriteStream {
     this.pos += buf.length;
   }
 
+  writeInt32LE(n: number): void {
+    this.data.writeInt32LE(n, this.pos);
+    this.pos += 4;
+  }
+
+  writeInt16LE(n: number): void {
+    this.data.writeInt16LE(n, this.pos);
+    this.pos += 2;
+  }
+
   writeInt32BE(n: number): void {
     this.data.writeInt32BE(n, this.pos);
     this.pos += 4;
