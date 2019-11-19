@@ -82,8 +82,10 @@ export const readArrayOf = <T>(
   max: number,
   readFunc: (stream: ReadStream) => T
 ): T[] => {
-  const countBytes = readSingleByteLenValue(stream, minSize, maxSize);
-  const count = pad(countBytes, 4).readInt32BE(0);
+  const count = pad(
+    readSingleByteLenValue(stream, minSize, maxSize),
+    4
+  ).readInt32BE(0);
   if (count < min || count > max) {
     throw new Error(
       `Unexpected array size: ${count} (expected a value between ${min} and ${max})`
@@ -104,7 +106,7 @@ const shiftLeftAndAdd = (bn: BigNumber, byte: number): BigNumber => {
 };
 
 export const readSingleInt64BEValue = (stream: ReadStream): BigNumber => {
-  const bytes = readSingleByteLenValue(stream, 0, 8);
+  const bytes = pad(readSingleByteLenValue(stream, 0, 8), 8);
   let bn = new BigNumber(0);
   for (let i = 0; i < bytes.length; i++) {
     bn = shiftLeftAndAdd(bn, bytes[i]);
