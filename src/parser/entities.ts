@@ -204,41 +204,13 @@ export class MerklePath {
     readonly index: Int
   ) {}
 
-  static fromCompact(compact: string): MerklePath {
-    const parts = compact.split(':');
-
-    if (parts.length <= 3) {
-      throw new Error(`invalid compact format #1`);
-    }
-
-    const treeIndex = Number.parseInt(parts[0], 10);
-    const index = Number.parseInt(parts[1], 10);
-
-    if (treeIndex < 0 || index < 0) {
-      throw new Error(`invalid compact format #2`);
-    }
-
-    const subject = Sha256Hash.fromHex(parts[2]);
-
-    const layers: Sha256Hash[] = [];
-    for (let i = 3; i < parts.length; i++) {
-      layers.push(Sha256Hash.fromHex(parts[i]));
-    }
-
-    return new MerklePath(layers, subject, index);
-  }
-
   static read(stream: ReadStream, subject: Sha256Hash): MerklePath {
     const merkleBytes = readVarLenValue(stream, 0, MAX_MERKLE_BYTES);
     const readable = new ReadStream(merkleBytes);
 
     const index = readSingleInt32BEValue(stream);
     const numLayers = readSingleInt32BEValue(stream);
-    if (
-      !Number.isInteger(numLayers) ||
-      numLayers < 0 ||
-      numLayers > MAX_LAYER_COUNT_MERKLE
-    ) {
+    if (numLayers < 0 || numLayers > MAX_LAYER_COUNT_MERKLE) {
       throw new Error(
         `Unexpected numLayers: 0 <= ${numLayers} <= ${MAX_LAYER_COUNT_MERKLE}`
       );

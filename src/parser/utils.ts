@@ -84,7 +84,7 @@ export const readArrayOf = <T>(
 ): T[] => {
   const countBytes = readSingleByteLenValue(stream, minSize, maxSize);
   const count = pad(countBytes, 4).readInt32BE(0);
-  if (!Number.isInteger(count) || count < min || count > max) {
+  if (count < min || count > max) {
     throw new Error(
       `Unexpected array size: ${count} (expected a value between ${min} and ${max})`
     );
