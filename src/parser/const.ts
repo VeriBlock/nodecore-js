@@ -1,4 +1,5 @@
 export const HASH256_SIZE = 32;
+export const VBK_HASH_SIZE = 24;
 export const MAX_LAYER_COUNT_MERKLE = 40;
 
 // size = (hash + hash.length) * MAX_LAYER_COUNT + (index + index.length) + (layers.size + layers.size.length) +
@@ -7,7 +8,6 @@ export const MAX_MERKLE_BYTES =
   (HASH256_SIZE + 1) * MAX_LAYER_COUNT_MERKLE + 5 + 5 + 5 + 5 + 4;
 
 export const BTC_HEADER_SIZE = 80;
-
 export const VBK_HEADER_SIZE = 64;
 
 // according to BIP 141 maximum block size is 4000000 bytes
@@ -101,7 +101,4 @@ export const MAX_RAWTX_SIZE_VBK_TX =
   // raw.size.size, raw.size
   5;
 
-export const BASE58_ALPHABET =
-  '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-export const BASE59_ALPHABET =
-  '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0';
+export const MAX_CONTEXT_COUNT_ALT_PUBLICATION = 15000;

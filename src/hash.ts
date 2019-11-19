@@ -12,7 +12,7 @@ export const sha256 = (buffer: Buffer): Buffer => {
   return Buffer.from(doSha256(buffer));
 };
 
-export const blake2s = (buffer: Buffer): Buffer => {
+export const vblake = (buffer: Buffer): Buffer => {
   // TODO: implement
   return Buffer.from(buffer);
 };
