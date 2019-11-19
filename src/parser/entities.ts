@@ -96,6 +96,44 @@ export class VBlakeHash {
   }
 }
 
+export class Address {
+  // Not sure if other fields are relevant.
+  constructor(readonly address: string) {}
+
+  static read(stream: ReadStream): Address {
+    const addressType = stream.readInt8();
+    const addressBytes = readSingleByteLenValue(stream, 0, ADDRESS_SIZE);
+    let address;
+    if (addressType === AddressType.STANDARD) {
+      address = Base58.encode(addressBytes);
+    } else {
+      address = Base59.encode(addressBytes);
+    }
+
+    return new Address(address);
+  }
+}
+
+export class Coin {
+  constructor(readonly atomicUnits: Long) {}
+
+  static read(stream: ReadStream): Coin {
+    const units = readSingleInt64BEValue(stream);
+    return new Coin(units);
+  }
+}
+
+export class Output {
+  constructor(readonly address: Address, readonly amount: Coin) {}
+
+  static read(stream: ReadStream): Output {
+    const address = Address.read(stream);
+    const amount = Coin.read(stream);
+
+    return new Output(address, amount);
+  }
+}
+
 export class BtcTx {
   constructor(readonly raw: Buffer) {}
 
@@ -352,44 +390,6 @@ export class VbkPopTx {
       publicKey,
       networkByte
     );
-  }
-}
-
-export class Address {
-  // Not sure if other fields are relevant.
-  constructor(readonly address: string) {}
-
-  static read(stream: ReadStream): Address {
-    const addressType = stream.readInt8();
-    const addressBytes = readSingleByteLenValue(stream, 0, ADDRESS_SIZE);
-    let address;
-    if (addressType === AddressType.STANDARD) {
-      address = Base58.encode(addressBytes);
-    } else {
-      address = Base59.encode(addressBytes);
-    }
-
-    return new Address(address);
-  }
-}
-
-export class Coin {
-  constructor(readonly atomicUnits: Long) {}
-
-  static read(stream: ReadStream): Coin {
-    const units = readSingleInt64BEValue(stream);
-    return new Coin(units);
-  }
-}
-
-export class Output {
-  constructor(readonly address: Address, readonly amount: Coin) {}
-
-  static read(stream: ReadStream): Output {
-    const address = Address.read(stream);
-    const amount = Coin.read(stream);
-
-    return new Output(address, amount);
   }
 }
 

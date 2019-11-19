@@ -13,7 +13,10 @@ import {
 } from '../../src/parser/entities';
 import { ReadStream } from '../../src/parser';
 import BigNumber from 'bignumber.js';
-import { PREVIOUS_BLOCK_LENGTH, PREVIOUS_KEYSTONE_LENGTH } from '../../src/parser/const';
+import {
+  PREVIOUS_BLOCK_LENGTH,
+  PREVIOUS_KEYSTONE_LENGTH,
+} from '../../src/parser/const';
 
 describe('parse', () => {
   it('BtcBlock', () => {

@@ -3,7 +3,7 @@ import { ReadStream } from './stream';
 import { TxType } from './entities';
 import BigNumber from 'bignumber.js';
 
-export const checkLength = (len: number, min: number, max: number) => {
+export const checkLength = (len: number, min: number, max: number): void => {
   if (len < min) {
     throw new Error(`Unexpected length: length:${len} < min:${min}`);
   }
@@ -37,7 +37,7 @@ export const readVarLenValue = (
   stream: ReadStream,
   min = 0,
   max = INT32_MAX
-) => {
+): Buffer => {
   const lengthLength: number = stream.readUInt8();
   checkLength(lengthLength, 0, 4);
 
