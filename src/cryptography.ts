@@ -207,8 +207,8 @@ export class KeyPair {
     return new KeyPair(pub, privateKey);
   }
 
-  static generate(entropy?: Buffer): KeyPair {
-    if (typeof entropy === 'undefined') {
+  static generate(entropy?: Buffer | undefined): KeyPair {
+    if (!entropy) {
       entropy = secureRandom(32);
     }
 
