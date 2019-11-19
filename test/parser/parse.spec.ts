@@ -4,17 +4,16 @@ import {
   BtcBlock,
   Coin,
   Output,
-  PublicationData, Sha256Hash,
-  VbkBlock, VbkMerklePath,
+  PublicationData,
+  Sha256Hash,
+  VbkBlock,
+  VbkMerklePath,
   VbkTx,
   VBlakeHash,
 } from '../../src/parser/entities';
 import { ReadStream } from '../../src/parser';
 import BigNumber from 'bignumber.js';
-import {
-  PREVIOUS_BLOCK_LENGTH,
-  PREVIOUS_KEYSTONE_LENGTH,
-} from '../../src/parser/const';
+import { PREVIOUS_BLOCK_LENGTH, PREVIOUS_KEYSTONE_LENGTH } from '../../src/parser/const';
 
 describe('parse', () => {
   it('BtcBlock', () => {
@@ -41,6 +40,12 @@ describe('parse', () => {
     expect(address.address).toEqual('V5Ujv72h4jEBcKnALGc4fKqs6CDAPX');
   });
 
+  const verifyPublicationData = (pd: PublicationData): void => {
+    expect(pd.header).toEqual(Buffer.from('header bytes'));
+    expect(pd.contextInfo).toEqual(Buffer.from('context info bytes'));
+    expect(pd.payoutInfo).toEqual(Buffer.from('payout info bytes'));
+  };
+
   it('PublicationData', () => {
     // generated in java
     const bytes = Buffer.from(
@@ -49,9 +54,7 @@ describe('parse', () => {
     );
     const stream = new ReadStream(bytes);
     const pd = PublicationData.read(stream);
-    expect(pd.header).toEqual(Buffer.from('header bytes'));
-    expect(pd.contextInfo).toEqual(Buffer.from('context info bytes'));
-    expect(pd.payoutInfo).toEqual(Buffer.from('payout info bytes'));
+    verifyPublicationData(pd);
   });
 
   it('Coin', () => {
@@ -74,6 +77,21 @@ describe('parse', () => {
     expect(c.amount.atomicUnits).toEqual(new BigNumber(1337));
   });
 
+  const verifyVbkTx = (tx: VbkTx): void => {
+    expect(tx.type).toEqual(0x01);
+    expect(tx.sourceAddress.address).toEqual('V5Ujv72h4jEBcKnALGc4fKqs6CDAPX');
+    expect(tx.sourceAmount.atomicUnits).toEqual(new BigNumber(1000));
+    expect(tx.outputs).toHaveLength(0);
+    expect(tx.signatureIndex).toEqual(new BigNumber(7));
+    verifyPublicationData(tx.publicationData);
+    expect(tx.signature.toString('hex').toUpperCase()).toEqual(
+      '30440220398B74708DC8F8AEE68FCE0C47B8959E6FCE6354665DA3ED87A83F708E62AA6B02202E6C00C00487763C55E92C7B8E1DD538B7375D8DF2B2117E75ACBB9DB7DEB3C7'
+    );
+    expect(tx.publicKey.toString('hex').toUpperCase()).toEqual(
+      '3056301006072A8648CE3D020106052B8104000A03420004DE4EE8300C3CD99E913536CF53C4ADD179F048F8FE90E5ADF3ED19668DD1DBF6C2D8E692B1D36EAC7187950620A28838DA60A8C9DD60190C14C59B82CB90319E'
+    );
+  };
+
   it('VbkTx', () => {
     // generated in java
     const bytes = Buffer.from(
@@ -82,31 +100,10 @@ describe('parse', () => {
     );
     const stream = new ReadStream(bytes);
     const tx = VbkTx.read(stream);
-    expect(tx.type).toEqual(0x01);
-    expect(tx.sourceAddress.address).toEqual('V5Ujv72h4jEBcKnALGc4fKqs6CDAPX');
-    expect(tx.sourceAmount.atomicUnits).toEqual(new BigNumber(1000));
-    expect(tx.outputs).toHaveLength(0);
-    expect(tx.signatureIndex).toEqual(new BigNumber(7));
-    const pd = tx.publicationData;
-    expect(pd.header).toEqual(Buffer.from('header bytes'));
-    expect(pd.contextInfo).toEqual(Buffer.from('context info bytes'));
-    expect(pd.payoutInfo).toEqual(Buffer.from('payout info bytes'));
-    expect(tx.signature.toString('hex').toUpperCase()).toEqual(
-      '30440220398B74708DC8F8AEE68FCE0C47B8959E6FCE6354665DA3ED87A83F708E62AA6B02202E6C00C00487763C55E92C7B8E1DD538B7375D8DF2B2117E75ACBB9DB7DEB3C7'
-    );
-    expect(tx.publicKey.toString('hex').toUpperCase()).toEqual(
-      '3056301006072A8648CE3D020106052B8104000A03420004DE4EE8300C3CD99E913536CF53C4ADD179F048F8FE90E5ADF3ED19668DD1DBF6C2D8E692B1D36EAC7187950620A28838DA60A8C9DD60190C14C59B82CB90319E'
-    );
+    verifyVbkTx(tx);
   });
 
-  it('VbkBlock', () => {
-    // generated in java
-    const bytes = Buffer.from(
-      '40000013880002449C60619294546AD825AF03B0935637860679DDD55EE4FD21082E18686E26BBFDA7D5E4462EF24AE02D67E47D785C9B90F30101000000000001',
-      'hex'
-    );
-    const stream = new ReadStream(bytes);
-    const c = VbkBlock.read(stream);
+  const verifyVbkBlock = (c: VbkBlock): void => {
     expect(c.height).toEqual(5000);
     expect(c.version).toEqual(2);
     expect(c.previousBlock).toEqual(
@@ -130,7 +127,34 @@ describe('parse', () => {
     expect(c.timestamp).toEqual(1553699059);
     expect(c.difficulty).toEqual(16842752);
     expect(c.nonce).toEqual(1);
+  };
+
+  it('VbkBlock', () => {
+    // generated in java
+    const bytes = Buffer.from(
+      '40000013880002449C60619294546AD825AF03B0935637860679DDD55EE4FD21082E18686E26BBFDA7D5E4462EF24AE02D67E47D785C9B90F30101000000000001',
+      'hex'
+    );
+    const stream = new ReadStream(bytes);
+    const c = VbkBlock.read(stream);
+    verifyVbkBlock(c);
   });
+
+  const verifyVbkMerklePath = (c: VbkMerklePath): void => {
+    expect(c.index).toEqual(0);
+    expect(c.treeIndex).toEqual(1);
+    expect(c.subject).toEqual(
+      Sha256Hash.fromHex(
+        '1FEC8AA4983D69395010E4D18CD8B943749D5B4F575E88A375DEBDC5ED22531C'
+      )
+    );
+    const layers = [
+      '0000000000000000000000000000000000000000000000000000000000000000',
+      '0000000000000000000000000000000000000000000000000000000000000000',
+    ].map(o => Sha256Hash.fromHex(o));
+
+    expect(c.layers).toEqual(layers);
+  };
 
   it('VbkMerklePath', () => {
     // generated in java
@@ -140,16 +164,7 @@ describe('parse', () => {
     );
     const stream = new ReadStream(bytes);
     const c = VbkMerklePath.read(stream);
-    expect(c.index).toEqual(0);
-    expect(c.treeIndex).toEqual(1);
-    expect(c.subject).toEqual(Sha256Hash.fromHex("1FEC8AA4983D69395010E4D18CD8B943749D5B4F575E88A375DEBDC5ED22531C"))
-
-    const layers = [
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0000000000000000000000000000000000000000000000000000000000000000"
-    ].map(o => Sha256Hash.fromHex(o));
-
-    expect(c.layers).toEqual(layers);
+    verifyVbkMerklePath(c);
   });
 
   it('ATV', () => {
@@ -159,6 +174,12 @@ describe('parse', () => {
     );
     const stream = new ReadStream(bytes);
 
-    expect(() => ATV.read(stream)).not.toThrow();
+    const a = ATV.read(stream);
+
+    verifyVbkTx(a.transaction);
+    verifyPublicationData(a.transaction.publicationData);
+    verifyVbkBlock(a.containingBlock);
+    expect(a.context).toHaveLength(0);
+    verifyVbkMerklePath(a.merklePath);
   });
 });

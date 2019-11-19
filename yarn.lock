@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@1-corp/fixed-size-numbers-ts@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@1-corp/fixed-size-numbers-ts/-/fixed-size-numbers-ts-1.0.3.tgz#8f6b6e8b71434a9a92177e3a23f83dde146b8ab8"
-  integrity sha512-9Off7iTRXjOXWKckthoGs2sOy8GrO5slp797l4QCZLCDBCfFf2WYzL6Zo+fCTfHnlCFAjgYUh9I6n6mM2/XZaQ==
-  dependencies:
-    bignumber.js "^9.0.0"
-
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
