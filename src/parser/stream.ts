@@ -151,4 +151,9 @@ export class WriteStream {
     this.data.writeInt8(n, this.pos);
     this.pos += 1;
   }
+
+  writeUInt8(n: number): void {
+    this.data.writeUInt8(n, this.pos);
+    this.pos += 1;
+  }
 }

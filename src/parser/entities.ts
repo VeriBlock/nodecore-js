@@ -46,6 +46,10 @@ export class Sha256Hash {
     return this.data.toString('hex');
   }
 
+  toJSON(): string {
+    return this.data.toString('hex');
+  }
+
   // read consumes 1 byte "length"
   static read(stream: ReadStream, len: number): Sha256Hash {
     const data = readSingleByteLenValue(stream, len, len);
@@ -77,6 +81,10 @@ export class VBlakeHash {
     return this.data.toString('hex');
   }
 
+  toJSON(): string {
+    return this.data.toString('hex');
+  }
+
   trim(len: number): VBlakeHash {
     if (this.data.length < len) {
       throw new Error(
@@ -100,6 +108,10 @@ export class Address {
   // Not sure if other fields are relevant.
   constructor(readonly address: string) {}
 
+  toJSON(): string {
+    return this.address;
+  }
+
   static read(stream: ReadStream): Address {
     const addressType = stream.readInt8();
     const addressBytes = readSingleByteLenValue(stream, 0, ADDRESS_SIZE);
@@ -116,6 +128,10 @@ export class Address {
 
 export class Coin {
   constructor(readonly atomicUnits: Long) {}
+
+  toJSON(): string {
+    return this.atomicUnits.toString(10);
+  }
 
   static read(stream: ReadStream): Coin {
     const units = readSingleInt64BEValue(stream);
@@ -137,6 +153,10 @@ export class Output {
 export class BtcTx {
   constructor(readonly raw: Buffer) {}
 
+  toJSON(): string {
+    return this.raw.toString('hex');
+  }
+
   static read(stream: ReadStream): BtcTx {
     const raw = readVarLenValue(stream, 0, MAX_RAWTX_SIZE);
     return new BtcTx(raw);
@@ -152,10 +172,6 @@ export class BtcBlock {
     readonly bits: Int,
     readonly nonce: Int
   ) {}
-
-  getHash(): Sha256Hash {
-    return new Sha256Hash(sha256(sha256(this.serialize())));
-  }
 
   serialize(): Buffer {
     const stream = new WriteStream(BTC_HEADER_SIZE);
@@ -325,6 +341,14 @@ export class VbkPopTx {
     readonly networkByte?: Byte | undefined
   ) {}
 
+  toJSON(): object {
+    return {
+      ...this,
+      signature: this.signature.toString('hex'),
+      publicKey: this.publicKey.toString('hex'),
+    };
+  }
+
   static extract(
     stream: ReadStream,
     publicKey: Buffer,
@@ -383,6 +407,15 @@ export class PublicationData {
     readonly contextInfo: Buffer
   ) {}
 
+  toJSON(): object {
+    return {
+      ...this,
+      header: this.header.toString('hex'),
+      payoutInfo: this.payoutInfo.toString('hex'),
+      contextInfo: this.contextInfo.toString('hex'),
+    };
+  }
+
   static read(stream: ReadStream): PublicationData {
     const identifier = readSingleInt64BEValue(stream);
     const headerBytes = readVarLenValue(
@@ -422,6 +455,14 @@ export class VbkTx {
     readonly publicKey: Buffer,
     readonly networkByte: Byte | undefined
   ) {}
+
+  toJSON(): object {
+    return {
+      ...this,
+      signature: this.signature.toString('hex'),
+      publicKey: this.publicKey.toString('hex'),
+    };
+  }
 
   static extract(
     stream: ReadStream,
@@ -515,6 +556,12 @@ export class ATV {
     readonly context: VbkBlock[]
   ) {}
 
+  toJSON(): object {
+    return {
+      ...this,
+    };
+  }
+
   static read(stream: ReadStream): ATV {
     const transaction = VbkTx.read(stream);
     const merklePath = VbkMerklePath.read(stream);
@@ -540,6 +587,12 @@ export class VTB {
     readonly containingBlock: VbkBlock,
     readonly context: VbkBlock[]
   ) {}
+
+  toJSON(): object {
+    return {
+      ...this,
+    };
+  }
 
   static read(stream: ReadStream): VTB {
     const transaction = VbkPopTx.read(stream);
