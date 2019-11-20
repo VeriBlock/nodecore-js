@@ -90,7 +90,6 @@ export class BtcScriptSigParser implements Parser {
       if (publications.vtbs.length === 0) {
         throw new Error(`End of execution: VTBs array is empty`);
       }
-
     } catch (e) {
       throw new Error(`Failed to eval BTC script: ${e}`);
     }

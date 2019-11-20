@@ -343,7 +343,13 @@ export class VbkPopTx {
 
   toJSON(): object {
     return {
-      ...this,
+      address: this.address,
+      publishedBlock: this.publishedBlock,
+      bitcoinTransaction: this.bitcoinTransaction,
+      merklePath: this.merklePath,
+      blockOfProof: this.blockOfProof,
+      blockOfProofContext: this.blockOfProofContext,
+      networkByte: this.networkByte,
       signature: this.signature.toString('hex'),
       publicKey: this.publicKey.toString('hex'),
     };
@@ -409,7 +415,7 @@ export class PublicationData {
 
   toJSON(): object {
     return {
-      ...this,
+      identifier: this.identifier,
       header: this.header.toString('hex'),
       payoutInfo: this.payoutInfo.toString('hex'),
       contextInfo: this.contextInfo.toString('hex'),
@@ -458,7 +464,13 @@ export class VbkTx {
 
   toJSON(): object {
     return {
-      ...this,
+      type: this.type,
+      sourceAddress: this.sourceAddress,
+      sourceAmount: this.sourceAmount,
+      outputs: this.outputs,
+      signatureIndex: this.signatureIndex,
+      publicationData: this.publicationData,
+      networkByte: this.networkByte,
       signature: this.signature.toString('hex'),
       publicKey: this.publicKey.toString('hex'),
     };
@@ -556,12 +568,6 @@ export class ATV {
     readonly context: VbkBlock[]
   ) {}
 
-  toJSON(): object {
-    return {
-      ...this,
-    };
-  }
-
   static read(stream: ReadStream): ATV {
     const transaction = VbkTx.read(stream);
     const merklePath = VbkMerklePath.read(stream);
@@ -587,12 +593,6 @@ export class VTB {
     readonly containingBlock: VbkBlock,
     readonly context: VbkBlock[]
   ) {}
-
-  toJSON(): object {
-    return {
-      ...this,
-    };
-  }
 
   static read(stream: ReadStream): VTB {
     const transaction = VbkPopTx.read(stream);
