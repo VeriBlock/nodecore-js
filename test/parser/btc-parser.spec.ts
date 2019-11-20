@@ -1,6 +1,12 @@
-import { ATV, ReadStream, VTB, WriteStream } from '../../src/parser';
+import {
+  ATV,
+  parseBtcScriptSig,
+  ReadStream,
+  VTB,
+  WriteStream,
+} from '../../src/parser';
 import fs from 'fs';
-import { BtcScriptSigParser, Opcode } from '../../src/parser/btc-parser';
+import { Opcode } from '../../src/parser';
 
 const readAndParseJSON = (path: string) => {
   const data = fs.readFileSync(path, 'utf8');
@@ -55,9 +61,7 @@ describe('btc-parser', () => {
     stream.writeUInt8(Opcode.OP_CHECKVTB);
     stream.writeUInt8(Opcode.OP_CHECKPOP);
 
-    const parser = new BtcScriptSigParser();
-
-    const parsed = parser.parse(stream.data);
+    const parsed = parseBtcScriptSig(stream.data);
     expect(JSON.parse(JSON.stringify(parsed.atv))).toEqual(expectedATV);
     expect(parsed.vtbs).toHaveLength(1);
     expect(JSON.parse(JSON.stringify(parsed.vtbs[0]))).toEqual(expectedVTB);

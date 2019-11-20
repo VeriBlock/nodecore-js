@@ -611,3 +611,8 @@ export class VTB {
     return new VTB(transaction, merklePath, containingBlock, contextBlocks);
   }
 }
+
+export class Publications {
+  atv?: ATV = undefined;
+  vtbs: VTB[] = [];
+}
