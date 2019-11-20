@@ -54,11 +54,14 @@ export interface NetworkBytePair {
   typeId: number;
 }
 
-export const readNetworkByte = (stream: ReadStream): NetworkBytePair => {
+export const readNetworkByte = (
+  stream: ReadStream,
+  type: TxType
+): NetworkBytePair => {
   let networkByte = undefined;
   let typeId = undefined;
   const networkOrType = stream.readInt8();
-  if (networkOrType !== TxType.VBK_TX) {
+  if (networkOrType !== type) {
     networkByte = networkOrType;
     typeId = stream.readInt8();
   } else {
@@ -84,7 +87,7 @@ export const readArrayOf = <T>(
 ): T[] => {
   const count = pad(
     readSingleByteLenValue(stream, minSize, maxSize),
-    4
+    maxSize
   ).readInt32BE(0);
   if (count < min || count > max) {
     throw new Error(

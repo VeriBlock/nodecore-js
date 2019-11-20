@@ -168,7 +168,7 @@ export class BtcBlock {
     return stream.data;
   }
 
-  static read(stream: ReadStream): BtcBlock {
+  static extract(stream: ReadStream): BtcBlock {
     const version = stream.readInt32LE();
     const previousBlock = Sha256Hash.extract(stream, HASH256_SIZE);
     const merkleRoot = Sha256Hash.extract(stream, HASH256_SIZE);
@@ -186,14 +186,13 @@ export class BtcBlock {
     );
   }
 
-  static readWithLength(stream: ReadStream): BtcBlock {
+  static read(stream: ReadStream): BtcBlock {
     const bytes: Buffer = readSingleByteLenValue(
       stream,
       BTC_HEADER_SIZE,
       BTC_HEADER_SIZE
     );
-    const blockStream = new ReadStream(bytes);
-    return BtcBlock.read(blockStream);
+    return BtcBlock.extract(new ReadStream(bytes));
   }
 }
 
@@ -206,7 +205,8 @@ export class MerklePath {
 
   static read(stream: ReadStream, subject: Sha256Hash): MerklePath {
     const merkleBytes = readVarLenValue(stream, 0, MAX_MERKLE_BYTES);
-    const readable = new ReadStream(merkleBytes);
+
+    stream = new ReadStream(merkleBytes);
 
     const index = readSingleInt32BEValue(stream);
     const numLayers = readSingleInt32BEValue(stream);
@@ -217,7 +217,7 @@ export class MerklePath {
     }
 
     const sizeOfSizeBottomData = readSingleInt32BEValue(stream);
-    const sizeBottomData = readable.read(sizeOfSizeBottomData).readInt32BE(0);
+    const sizeBottomData = stream.read(sizeOfSizeBottomData).readInt32BE(0);
 
     if (sizeBottomData !== HASH256_SIZE) {
       throw new Error(
@@ -227,7 +227,7 @@ export class MerklePath {
 
     const layers: Sha256Hash[] = [];
     for (let i = 0; i < numLayers; i++) {
-      const hash = Sha256Hash.read(readable, HASH256_SIZE);
+      const hash = Sha256Hash.read(stream, HASH256_SIZE);
       layers.push(hash);
     }
 
@@ -262,15 +262,7 @@ export class VbkBlock {
     return stream.data;
   }
 
-  static read(stream: ReadStream): VbkBlock {
-    // consume 1 byte (length). block itself is next 64 bytes
-    const blockBytes = readSingleByteLenValue(
-      stream,
-      VBK_HEADER_SIZE,
-      VBK_HEADER_SIZE
-    );
-    stream = new ReadStream(blockBytes);
-
+  static extract(stream: ReadStream): VbkBlock {
     const height = stream.readInt32BE();
     const version = stream.readInt16BE();
     const previousBlock = VBlakeHash.read(stream, PREVIOUS_BLOCK_LENGTH).trim(
@@ -301,6 +293,17 @@ export class VbkBlock {
       nonce
     );
   }
+
+  static read(stream: ReadStream): VbkBlock {
+    // consume 1 byte (length). block itself is next 64 bytes
+    const blockBytes = readSingleByteLenValue(
+      stream,
+      VBK_HEADER_SIZE,
+      VBK_HEADER_SIZE
+    );
+
+    return VbkBlock.extract(new ReadStream(blockBytes));
+  }
 }
 
 export enum TxType {
@@ -330,17 +333,17 @@ export class VbkPopTx {
       PUBLIC_KEY_SIZE
     );
 
-    const txStream = new ReadStream(rawTx);
+    stream = new ReadStream(rawTx);
 
-    const { networkByte } = readNetworkByte(txStream);
-    const address = Address.read(txStream);
-    const publishedBlock = VbkBlock.read(txStream);
-    const bitcoinTransaction = BtcTx.read(txStream);
+    const { networkByte } = readNetworkByte(stream, TxType.VBK_POP_TX);
+    const address = Address.read(stream);
+    const publishedBlock = VbkBlock.read(stream);
+    const bitcoinTransaction = BtcTx.read(stream);
     const merklePath = MerklePath.read(
-      txStream,
+      stream,
       new Sha256Hash(sha256(sha256(bitcoinTransaction.raw)))
     );
-    const blockOfProof = BtcBlock.readWithLength(txStream);
+    const blockOfProof = BtcBlock.read(stream);
 
     const blockOfProofContext = readArrayOf<BtcBlock>(
       stream,
@@ -348,7 +351,7 @@ export class VbkPopTx {
       4,
       0,
       MAX_CONTEXT_COUNT,
-      BtcBlock.readWithLength
+      BtcBlock.read
     );
 
     return new VbkPopTx(
@@ -424,7 +427,7 @@ export class VbkTx {
 
     const txStream = new ReadStream(rawTx);
 
-    const { typeId, networkByte } = readNetworkByte(txStream);
+    const { typeId, networkByte } = readNetworkByte(txStream, TxType.VBK_TX);
     const sourceAddress = Address.read(txStream);
     const sourceAmount = Coin.read(txStream);
     const outputsSize = txStream.readUInt8();
@@ -514,5 +517,31 @@ export class ATV {
     );
 
     return new ATV(transaction, merklePath, containingBlock, contextBlocks);
+  }
+}
+
+export class VTB {
+  constructor(
+    readonly transaction: VbkPopTx,
+    readonly merklePath: VbkMerklePath,
+    readonly containingBlock: VbkBlock,
+    readonly context: VbkBlock[]
+  ) {}
+
+  static read(stream: ReadStream): VTB {
+    const transaction = VbkPopTx.read(stream);
+    const merklePath = VbkMerklePath.read(stream);
+    const containingBlock = VbkBlock.read(stream);
+
+    const contextBlocks = readArrayOf<VbkBlock>(
+      stream,
+      0,
+      4,
+      0,
+      MAX_CONTEXT_COUNT_ALT_PUBLICATION,
+      VbkBlock.read
+    );
+
+    return new VTB(transaction, merklePath, containingBlock, contextBlocks);
   }
 }
