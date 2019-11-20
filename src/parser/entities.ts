@@ -203,11 +203,7 @@ export class MerklePath {
     readonly index: Int
   ) {}
 
-  static read(stream: ReadStream, subject: Sha256Hash): MerklePath {
-    const merkleBytes = readVarLenValue(stream, 0, MAX_MERKLE_BYTES);
-
-    stream = new ReadStream(merkleBytes);
-
+  static extract(stream: ReadStream, subject: Sha256Hash): MerklePath {
     const index = readSingleInt32BEValue(stream);
     const numLayers = readSingleInt32BEValue(stream);
     if (numLayers < 0 || numLayers > MAX_LAYER_COUNT_MERKLE) {
@@ -232,6 +228,11 @@ export class MerklePath {
     }
 
     return new MerklePath(layers, subject, index);
+  }
+
+  static read(stream: ReadStream, subject: Sha256Hash): MerklePath {
+    const merkleBytes = readVarLenValue(stream, 0, MAX_MERKLE_BYTES);
+    return MerklePath.extract(new ReadStream(merkleBytes), subject);
   }
 }
 
@@ -324,17 +325,11 @@ export class VbkPopTx {
     readonly networkByte?: Byte | undefined
   ) {}
 
-  static read(stream: ReadStream): VbkPopTx {
-    const rawTx = readVarLenValue(stream, 0, MAX_RAWTX_SIZE_VBK_POP_TX);
-    const signature = readSingleByteLenValue(stream, 0, MAX_SIGNATURE_SIZE);
-    const publicKey = readSingleByteLenValue(
-      stream,
-      PUBLIC_KEY_SIZE,
-      PUBLIC_KEY_SIZE
-    );
-
-    stream = new ReadStream(rawTx);
-
+  static extract(
+    stream: ReadStream,
+    publicKey: Buffer,
+    signature: Buffer
+  ): VbkPopTx {
     const { networkByte } = readNetworkByte(stream, TxType.VBK_POP_TX);
     const address = Address.read(stream);
     const publishedBlock = VbkBlock.read(stream);
@@ -365,6 +360,18 @@ export class VbkPopTx {
       publicKey,
       networkByte
     );
+  }
+
+  static read(stream: ReadStream): VbkPopTx {
+    const rawTx = readVarLenValue(stream, 0, MAX_RAWTX_SIZE_VBK_POP_TX);
+    const signature = readSingleByteLenValue(stream, 0, MAX_SIGNATURE_SIZE);
+    const publicKey = readSingleByteLenValue(
+      stream,
+      PUBLIC_KEY_SIZE,
+      PUBLIC_KEY_SIZE
+    );
+
+    return VbkPopTx.extract(new ReadStream(rawTx), publicKey, signature);
   }
 }
 
@@ -416,32 +423,26 @@ export class VbkTx {
     readonly networkByte: Byte | undefined
   ) {}
 
-  static read(stream: ReadStream): VbkTx {
-    const rawTx = readVarLenValue(stream, 0, MAX_RAWTX_SIZE_VBK_TX);
-    const signature = readSingleByteLenValue(stream, 0, MAX_SIGNATURE_SIZE);
-    const publicKey = readSingleByteLenValue(
-      stream,
-      PUBLIC_KEY_SIZE,
-      PUBLIC_KEY_SIZE
-    );
-
-    const txStream = new ReadStream(rawTx);
-
-    const { typeId, networkByte } = readNetworkByte(txStream, TxType.VBK_TX);
-    const sourceAddress = Address.read(txStream);
-    const sourceAmount = Coin.read(txStream);
-    const outputsSize = txStream.readUInt8();
+  static extract(
+    stream: ReadStream,
+    publicKey: Buffer,
+    signature: Buffer
+  ): VbkTx {
+    const { typeId, networkByte } = readNetworkByte(stream, TxType.VBK_TX);
+    const sourceAddress = Address.read(stream);
+    const sourceAmount = Coin.read(stream);
+    const outputsSize = stream.readUInt8();
     checkLength(outputsSize, 0, MAX_OUTPUTS_COUNT);
 
     const outputs: Output[] = [];
     for (let i = 0; i < outputsSize; i++) {
-      const output = Output.read(txStream);
+      const output = Output.read(stream);
       outputs.push(output);
     }
 
-    const signatureIndex = readSingleInt64BEValue(txStream);
+    const signatureIndex = readSingleInt64BEValue(stream);
     const publicationDataBytes = readVarLenValue(
-      txStream,
+      stream,
       0,
       MAX_SIZE_PUBLICATION_DATA
     );
@@ -460,6 +461,18 @@ export class VbkTx {
       publicKey,
       networkByte
     );
+  }
+
+  static read(stream: ReadStream): VbkTx {
+    const rawTx = readVarLenValue(stream, 0, MAX_RAWTX_SIZE_VBK_TX);
+    const signature = readSingleByteLenValue(stream, 0, MAX_SIGNATURE_SIZE);
+    const publicKey = readSingleByteLenValue(
+      stream,
+      PUBLIC_KEY_SIZE,
+      PUBLIC_KEY_SIZE
+    );
+
+    return VbkTx.extract(new ReadStream(rawTx), publicKey, signature);
   }
 }
 
