@@ -200,6 +200,8 @@ describe('parse', () => {
         'base64'
       )
     );
+
+    expect(tx.networkByte).not.toBeDefined();
   };
 
   it('VbkPopTx', () => {
