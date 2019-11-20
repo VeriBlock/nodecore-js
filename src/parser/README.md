@@ -175,6 +175,8 @@ Output:
 ```ts
 const scriptSig = Buffer.from(...);
 const interpreter = new BtcScriptSigParser();
+// accepts instance of Buffer or hex string
+// throws if scriptSig is invalid (can not be parsed)
 const publications = interpreter.parse(scriptSig);
 
 console.log(publications.atv);  // one ATV
