@@ -8,3 +8,4 @@ export * from './const';
 export * from './hash';
 export * from './types';
 export * from './io';
+export { parseBtcScriptSig } from './parser';
