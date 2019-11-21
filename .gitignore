@@ -10,3 +10,4 @@ yarn-error.log
 *.d.ts
 build
 package-lock.json
+.DS_Store
