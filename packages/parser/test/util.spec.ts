@@ -1,4 +1,4 @@
-import { pad } from '../../src/parser/utils';
+import { pad } from '../src/utils';
 
 interface PadTestCase {
   initial: number[];

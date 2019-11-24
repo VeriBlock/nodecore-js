@@ -1,7 +1,14 @@
 {
-  "workspaces": [
-    "packages/*"
+  "name": "@veriblock/nodecore-js",
+  "version": "1.6.0",
+  "description": "JavaScript/TypeScript libraries for veriblock nodecore repo.",
+  "main": "./build/node/src/index.js",
+  "types": "./build/node/src/index.d.ts",
+  "files": [
+    "/build/node/src/**/*",
+    "/build/browser.veriblock.js"
   ],
+  "private": false,
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
@@ -21,7 +28,18 @@
     "prepare": "npm run build && npm run build:browser"
   },
   "jest": {
-    "projects": ["./packages/*/src"]
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",

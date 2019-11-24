@@ -4,9 +4,9 @@ import {
   ReadStream,
   VTB,
   WriteStream,
-} from '../../src/parser';
+} from '../src';
 import fs from 'fs';
-import { Opcode } from '../../src/parser';
+import { Opcode } from '../src';
 
 const readAndParseJSON = (path: string) => {
   const data = fs.readFileSync(path, 'utf8');

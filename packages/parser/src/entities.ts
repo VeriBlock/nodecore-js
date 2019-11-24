@@ -31,7 +31,7 @@ import {
   VBK_MERKLE_ROOT_LENGTH,
 } from './const';
 import { ReadStream, WriteStream } from './stream';
-import { AddressType, Base58, Base59, sha256 } from '../.';
+import { AddressType, Base58, Base59, sha256 } from '@veriblock/nodecore-js';
 import BigNumber from 'bignumber.js';
 
 export type Long = BigNumber;
