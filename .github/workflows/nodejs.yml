@@ -24,9 +24,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd packages/parser && npm install && cd ../..
-    - run: npm install
+    - run: npm run bootstrap
     - run: npm run build
-    - run: npm run lint
-    - run: npm run lint:compat
-    - run: npm test
+    - run: npm run test:all

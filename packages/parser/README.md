@@ -1,5 +1,20 @@
 # ATV/VTB parser
 
+## Interpreter
+
+### BTC scriptSig interpreter
+
+```ts
+const scriptSig = Buffer.from(...);
+// accepts instance of Buffer or hex string
+// throws if scriptSig is invalid (can not be parsed)
+const publications = parseBtcScriptSig(scriptSig);
+
+console.log(publications.atv);  // one ATV
+console.log(publications.vtbs); // array of VTBs
+```
+
+
 ### ATV - AltPublication
 
 ```ts
@@ -166,18 +181,4 @@ Output:
   },
   "context": []
 }
-```
-
-## Interpreter
-
-### BTC scriptSig interpreter
-
-```ts
-const scriptSig = Buffer.from(...);
-// accepts instance of Buffer or hex string
-// throws if scriptSig is invalid (can not be parsed)
-const publications = parseBtcScriptSig(scriptSig);
-
-console.log(publications.atv);  // one ATV
-console.log(publications.vtbs); // array of VTBs
 ```

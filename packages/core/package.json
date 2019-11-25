@@ -17,8 +17,8 @@
     "clean": "gts clean",
     "compile": "tsc -p .",
     "test:all": "yarn test && yarn lint && yarn lint:compat",
-    "lint": "eslint -c .eslintrc_ts.json src --ext .ts",
-    "lint:compat": "yarn build && eslint -c .eslintrc_compat.json build/node --ext .js",
+    "lint": "eslint -c ../../.eslintrc_ts.json src --ext .ts",
+    "lint:compat": "yarn build && eslint -c ../../.eslintrc_compat.json build/node --ext .js",
     "fix": "gts fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -71,26 +71,5 @@
     "secp256k1": "^3.7.1",
     "secure-random": "^1.1.2",
     "stream-buffers": "^3.0.2"
-  },
-  "devDependencies": {
-    "@types/base-x": "^3.0.0",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^10.14.20",
-    "@types/secp256k1": "^3.5.0",
-    "@types/stream-buffers": "^3.0.3",
-    "@typescript-eslint/eslint-plugin": "^2.6.1",
-    "@typescript-eslint/parser": "^2.6.1",
-    "eslint": "^6.6.0",
-    "eslint-plugin-compat": "^3.3.0",
-    "gts": "^1.1.0",
-    "jest": "^24.9.0",
-    "prettier": "1.18.2",
-    "ts-jest": "^24.1.0",
-    "ts-loader": "^6.2.0",
-    "tsc": "^1.20150623.0",
-    "tslint": "^5.20.0",
-    "typescript": "^3.5.3",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
   }
 }

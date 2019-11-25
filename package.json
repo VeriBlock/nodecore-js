@@ -1,29 +1,19 @@
 {
-  "workspaces": [
-    "packages/*"
-  ],
+  "name": "nodecore-js",
+  "private": false,
+  "description": "Monorepo for nodecore related projects",
   "scripts": {
-    "watch": "tsc -w",
+    "convert": "npx lerna link convert",
+    "bootstrap": "npx lerna bootstrap",
     "build": "lerna run build",
     "build:browser": "lerna run build:browser",
-    "check": "gts check",
-    "clean": "gts clean",
-    "compile": "tsc -p .",
-    "test:all": "yarn test && yarn lint && yarn lint:compat",
-    "lint": "eslint -c .eslintrc_ts.json ./packages/*/src --ext .ts",
-    "lint:compat": "yarn build && eslint -c .eslintrc_compat.json packages/*/build/node --ext .js",
-    "fix": "gts fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "pretest": "npm run compile",
-    "posttest": "npm run check",
-    "prepare": "npm run build && npm run build:browser"
-  },
-  "jest": {
-    "projects": [
-      "./packages/*/src"
-    ]
+    "check": "lerna run check",
+    "clean": "lerna run clean",
+    "compile": "lerna run compile",
+    "test:all": "lerna run test:all",
+    "fix": "lerna run fix",
+    "test": "lerna run test",
+    "test:cov": "lerna run test:cov"
   },
   "repository": {
     "type": "git",
@@ -47,14 +37,8 @@
   },
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
   "dependencies": {
-    "base-x": "^3.0.7",
-    "bignumber.js": "^9.0.0",
-    "fast-sha256": "^1.1.0",
-    "fp-ts": "^2.1.1",
-    "io-ts": "^2.0.1",
-    "secp256k1": "^3.7.1",
-    "secure-random": "^1.1.2",
-    "stream-buffers": "^3.0.2"
+    "@veriblock/nodecore-js": "file:packages/core",
+    "@veriblock/nodecore-parser": "file:packages/parser"
   },
   "devDependencies": {
     "@types/base-x": "^3.0.0",
@@ -77,6 +61,5 @@
     "typescript": "^3.5.3",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
-  },
-  "name": "nodecore-js"
+  }
 }
