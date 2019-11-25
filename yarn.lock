@@ -1303,8 +1303,22 @@
     semver "^6.3.0"
     tsutils "^3.17.1"
 
-"@veriblock/nodecore-js@file:packages/core":
+"@veriblock/nodecore-js@*":
   version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@veriblock/nodecore-js/-/nodecore-js-1.6.0.tgz#beed753246048fef3a88d09c52c63f10b50d3f30"
+  integrity sha512-r3wLSwy9Zua4DzPjw3eoGVTtw+0p9pHptctg8UIkMY+tq5l3C99DPgSvMKpRWVQvpIGjZSeVDGRsIXv9Bphf6A==
+  dependencies:
+    base-x "^3.0.7"
+    bignumber.js "^9.0.0"
+    fast-sha256 "^1.1.0"
+    fp-ts "^2.1.1"
+    io-ts "^2.0.1"
+    secp256k1 "^3.7.1"
+    secure-random "^1.1.2"
+    stream-buffers "^3.0.2"
+
+"@veriblock/nodecore-js@file:packages/core":
+  version "1.6.1"
   dependencies:
     base-x "^3.0.7"
     bignumber.js "^9.0.0"
@@ -1316,9 +1330,9 @@
     stream-buffers "^3.0.2"
 
 "@veriblock/nodecore-parser@file:packages/parser":
-  version "1.0.0"
+  version "1.0.1"
   dependencies:
-    "@veriblock/nodecore-js" "file:../../.cache/yarn/v6/npm-@veriblock-nodecore-parser-1.0.0-c7f657fe-ec9a-4ee5-8d01-3ae862cdb853-1574674097909/node_modules/@veriblock/core"
+    "@veriblock/nodecore-js" "*"
     base-x "^3.0.7"
     bignumber.js "^9.0.0"
     fast-sha256 "^1.1.0"
