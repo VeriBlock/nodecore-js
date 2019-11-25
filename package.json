@@ -8,7 +8,7 @@
     "build": "lerna run build",
     "build:browser": "lerna run build:browser",
     "check": "lerna run check",
-    "link": "lerna run build && lerna link",
+    "link": "lerna link && lerna run build",
     "clean": "lerna run clean",
     "compile": "lerna run compile",
     "test:all": "lerna run test:all",
