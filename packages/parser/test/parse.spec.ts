@@ -13,13 +13,13 @@ import {
   VbkTx,
   VBlakeHash,
   VTB,
-} from '../../src/parser/entities';
-import { ReadStream } from '../../src/parser';
+} from '../src/entities';
+import { ReadStream } from '../src';
 import BigNumber from 'bignumber.js';
 import {
   PREVIOUS_BLOCK_LENGTH,
   PREVIOUS_KEYSTONE_LENGTH,
-} from '../../src/parser/const';
+} from '../src/const';
 
 describe('parse', () => {
   it('BtcBlock', () => {

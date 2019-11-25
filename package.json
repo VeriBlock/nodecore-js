@@ -1,45 +1,20 @@
 {
-  "name": "@veriblock/nodecore-js",
-  "version": "1.6.0",
-  "description": "JavaScript/TypeScript libraries for veriblock nodecore repo.",
-  "main": "./build/node/src/index.js",
-  "types": "./build/node/src/index.d.ts",
-  "files": [
-    "/build/node/src/**/*",
-    "/build/browser.veriblock.js"
-  ],
+  "name": "nodecore-js",
   "private": false,
+  "description": "Monorepo for nodecore related projects",
   "scripts": {
-    "watch": "tsc -w",
-    "build": "tsc",
-    "build:browser": "webpack-cli",
-    "check": "gts check",
-    "clean": "gts clean",
-    "compile": "tsc -p .",
-    "test:all": "yarn test && yarn lint && yarn lint:compat",
-    "lint": "eslint -c .eslintrc_ts.json src --ext .ts",
-    "lint:compat": "yarn build && eslint -c .eslintrc_compat.json build/node --ext .js",
-    "fix": "gts fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "pretest": "npm run compile",
-    "posttest": "npm run check",
-    "prepare": "npm run build && npm run build:browser"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": ".",
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "convert": "lerna link convert",
+    "bootstrap": "npx lerna bootstrap",
+    "build": "lerna run build",
+    "build:browser": "lerna run build:browser",
+    "check": "lerna run check",
+    "link:all": "lerna link && lerna run build",
+    "clean": "lerna run clean",
+    "compile": "lerna run compile",
+    "test:all": "lerna run test:all",
+    "fix": "lerna run fix",
+    "test": "lerna run test",
+    "test:cov": "lerna run test:cov"
   },
   "repository": {
     "type": "git",
@@ -63,14 +38,8 @@
   },
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
   "dependencies": {
-    "base-x": "^3.0.7",
-    "bignumber.js": "^9.0.0",
-    "fast-sha256": "^1.1.0",
-    "fp-ts": "^2.1.1",
-    "io-ts": "^2.0.1",
-    "secp256k1": "^3.7.1",
-    "secure-random": "^1.1.2",
-    "stream-buffers": "^3.0.2"
+    "@veriblock/nodecore-js": "file:packages/core",
+    "@veriblock/nodecore-parser": "file:packages/parser"
   },
   "devDependencies": {
     "@types/base-x": "^3.0.0",
@@ -84,6 +53,7 @@
     "eslint-plugin-compat": "^3.3.0",
     "gts": "^1.1.0",
     "jest": "^24.9.0",
+    "lerna": "^3.19.0",
     "prettier": "1.18.2",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.0",

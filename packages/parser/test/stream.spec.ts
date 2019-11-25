@@ -1,4 +1,4 @@
-import { ReadStream, WriteStream } from '../../src/parser';
+import { ReadStream, WriteStream } from '../src';
 
 describe('read stream', () => {
   it('read', () => {
