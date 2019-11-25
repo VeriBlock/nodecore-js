@@ -4,7 +4,7 @@
   "description": "Monorepo for nodecore related projects",
   "scripts": {
     "convert": "lerna link convert",
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "npx lerna bootstrap",
     "build": "lerna run build",
     "build:browser": "lerna run build:browser",
     "check": "lerna run check",
