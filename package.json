@@ -3,6 +3,7 @@
   "private": false,
   "description": "Monorepo for nodecore related projects",
   "scripts": {
+    "publish:all": "lerna publish from-package",
     "convert": "lerna link convert",
     "bootstrap": "npx lerna bootstrap",
     "build": "lerna run build",
@@ -62,5 +63,6 @@
     "typescript": "^3.5.3",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
-  }
+  },
+  "version": "0.0.0"
 }
