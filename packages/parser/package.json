@@ -61,10 +61,10 @@
     "@veriblock/nodecore-js": "*",
     "base-x": "^3.0.7",
     "bignumber.js": "^9.0.0",
-    "fast-sha256": "^1.1.0",
-    "fp-ts": "^2.1.1",
-    "io-ts": "^2.0.1",
-    "secp256k1": "^3.7.1",
+    "fast-sha256": "^1.1.1",
+    "fp-ts": "^2.3.1",
+    "io-ts": "^2.0.3",
+    "secp256k1": "^3.8.0",
     "secure-random": "^1.1.2",
     "stream-buffers": "^3.0.2"
   }
