@@ -18,7 +18,7 @@ jobs:
           node-version: 12.x
           registry-url: https://npm.pkg.github.com/
           scope: '@veriblock'
-      - run: npm run publish
+      - run: lerna publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - run: npm run publish
+      - run: lerna publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
