@@ -18,6 +18,7 @@ import {
   MAX_LAYER_COUNT_MERKLE,
   MAX_MERKLE_BYTES,
   MAX_OUTPUTS_COUNT,
+  MAX_PAYOUT_SIZE_PUBLICATION_DATA,
   MAX_RAWTX_SIZE,
   MAX_RAWTX_SIZE_VBK_POP_TX,
   MAX_RAWTX_SIZE_VBK_TX,
@@ -437,7 +438,7 @@ export class PublicationData {
     const payoutInfoBytes = readVarLenValue(
       stream,
       0,
-      MAX_CONTEXT_SIZE_PUBLICATION_DATA
+      MAX_PAYOUT_SIZE_PUBLICATION_DATA
     );
 
     return new PublicationData(
@@ -612,7 +613,13 @@ export class VTB {
   }
 }
 
+export class Context {
+  btc: Buffer[] = [];
+  vbk: Buffer[] = [];
+}
+
 export class Publications {
   atv?: ATV = undefined;
   vtbs: VTB[] = [];
+  context: Context = new Context();
 }
