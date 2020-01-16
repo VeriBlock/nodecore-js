@@ -16,7 +16,7 @@
     "fix": "lerna run fix",
     "test": "lerna run test",
     "test:cov": "lerna run test:cov",
-    "publish": "lerna publish"
+    "publish": "npx lerna publish"
   },
   "repository": {
     "type": "git",
