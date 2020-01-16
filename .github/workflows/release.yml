@@ -8,32 +8,32 @@ on:
     - feature/ci
 
 jobs:
-  publish-github:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-          registry-url: https://npm.pkg.github.com/
-          scope: '@veriblock'
-      - run: npm run publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-npmjs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - run: npm run publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+#  publish-github:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - name: Use Node.js 12.x
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12.x
+#          registry-url: https://npm.pkg.github.com/
+#          scope: '@veriblock'
+#      - run: npm run publish
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#  publish-npmjs:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - name: Use Node.js 12.x
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 12.x
+#      - run: npm run publish
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
   sonar:
     runs-on: ubuntu-latest

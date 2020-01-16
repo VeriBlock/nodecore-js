@@ -69,5 +69,6 @@
   },
   "devDependencies": {
     "typescript": "^3.7.4"
-  }
+  },
+  "gitHead": "993806bc4a10569340bebaf36a4accf91b614847"
 }
