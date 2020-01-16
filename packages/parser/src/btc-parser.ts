@@ -1,5 +1,6 @@
 import { ReadStream } from './stream';
 import { ATV, Publications, VTB } from './entities';
+import { BTC_HEADER_SIZE, VBK_HEADER_SIZE } from './const';
 
 export enum Opcode {
   OP_CHECKATV = 0xba,
@@ -8,6 +9,8 @@ export enum Opcode {
   OP_PUSHDATA4 = 0x4e,
   OP_PUSHDATA2 = 0x4d,
   OP_PUSHDATA1 = 0x4c,
+  OP_POPBTCHEADER = 0xbd,
+  OP_POPVBKHEADER = 0xbe,
 }
 
 interface GetOpRet {
@@ -49,6 +52,34 @@ const evalScript = (script: Buffer): Publications => {
       }
 
       switch (opcode) {
+        case Opcode.OP_POPBTCHEADER: {
+          const header = stack.pop();
+          if (!header) {
+            throw new Error(`expected BTC header, but stack is empty`);
+          }
+          if (header.length !== BTC_HEADER_SIZE) {
+            throw new Error(
+              `expected BTC header of size ${BTC_HEADER_SIZE}, got size ${header.length}`
+            );
+          }
+          publications.context.btc.push(header);
+          break;
+        }
+        case Opcode.OP_POPVBKHEADER: {
+          const header = stack.pop();
+          if (!header) {
+            throw new Error(`expected VBK header, but stack is empty`);
+          }
+
+          if (header.length !== VBK_HEADER_SIZE) {
+            throw new Error(
+              `expected VBK header of size ${VBK_HEADER_SIZE}, got size ${header.length}`
+            );
+          }
+
+          publications.context.vbk.push(header);
+          break;
+        }
         case Opcode.OP_CHECKVTB: {
           const vtb = stack.pop();
           if (!vtb) {
@@ -92,10 +123,6 @@ const evalScript = (script: Buffer): Publications => {
 
     if (!publications.atv) {
       throw new Error(`End of execution: ATV is empty`);
-    }
-
-    if (publications.vtbs.length === 0) {
-      throw new Error(`End of execution: VTBs array is empty`);
     }
   } catch (e) {
     throw new Error(`Failed to eval BTC script: ${e}`);
