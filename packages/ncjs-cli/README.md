@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.1.4 linux-x64 node-v13.1.0
+ncjs-cli/1.1.5 linux-x64 node-v13.1.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -68,7 +68,7 @@ EXAMPLES
   $ ncjs-cli decode --subject 94E097B110BA3ADBB7B6C4C599D31D675DE7BE6E722407410C08EF352BE585F1 --merklepath <...>
 ```
 
-_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.1.4/src/commands/decode.js)_
+_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.1.5/src/commands/decode.js)_
 
 ## `ncjs-cli help [COMMAND]`
 
