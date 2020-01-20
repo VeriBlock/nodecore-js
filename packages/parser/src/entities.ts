@@ -339,7 +339,7 @@ export class VbkPopTx {
     readonly blockOfProofContext: BtcBlock[],
     readonly signature: Buffer,
     readonly publicKey: Buffer,
-    readonly networkByte?: Byte | undefined
+    readonly networkByte?: Byte
   ) {}
 
   toJSON(): object {
