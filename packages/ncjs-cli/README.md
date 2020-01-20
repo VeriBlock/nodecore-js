@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.2.2 linux-x64 node-v13.1.0
+ncjs-cli/1.2.3 linux-x64 node-v13.1.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -28,34 +28,9 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`ncjs-cli autocomplete [SHELL]`](#ncjs-cli-autocomplete-shell)
 * [`ncjs-cli bech32`](#ncjs-cli-bech32)
 * [`ncjs-cli decode`](#ncjs-cli-decode)
 * [`ncjs-cli help [COMMAND]`](#ncjs-cli-help-command)
-* [`ncjs-cli update [CHANNEL]`](#ncjs-cli-update-channel)
-
-## `ncjs-cli autocomplete [SHELL]`
-
-display autocomplete installation instructions
-
-```
-USAGE
-  $ ncjs-cli autocomplete [SHELL]
-
-ARGUMENTS
-  SHELL  shell type
-
-OPTIONS
-  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
-
-EXAMPLES
-  $ ncjs-cli autocomplete
-  $ ncjs-cli autocomplete bash
-  $ ncjs-cli autocomplete zsh
-  $ ncjs-cli autocomplete --refresh-cache
-```
-
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v0.1.5/src/commands/autocomplete/index.ts)_
 
 ## `ncjs-cli bech32`
 
@@ -73,7 +48,7 @@ OPTIONS
   -v, --version=version  segwit version
 ```
 
-_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.2.2/src/commands/bech32.js)_
+_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.2.3/src/commands/bech32.js)_
 
 ## `ncjs-cli decode`
 
@@ -112,7 +87,7 @@ EXAMPLES
   $ ncjs-cli decode --subject 94E097B110BA3ADBB7B6C4C599D31D675DE7BE6E722407410C08EF352BE585F1 --merklepath <...>
 ```
 
-_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.2.2/src/commands/decode.js)_
+_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.2.3/src/commands/decode.js)_
 
 ## `ncjs-cli help [COMMAND]`
 
@@ -130,15 +105,4 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
-
-## `ncjs-cli update [CHANNEL]`
-
-update the ncjs-cli CLI
-
-```
-USAGE
-  $ ncjs-cli update [CHANNEL]
-```
-
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.3.9/src/commands/update.ts)_
 <!-- commandsstop -->

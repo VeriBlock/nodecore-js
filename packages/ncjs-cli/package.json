@@ -1,7 +1,7 @@
 {
   "name": "ncjs-cli",
   "description": "NodeCore CLI",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "VeriBlock",
   "bin": {
     "ncjs-cli": "./bin/run"
