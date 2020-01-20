@@ -1,0 +1,53 @@
+{
+  "name": "ncjs-cli",
+  "description": "NodeCore CLI",
+  "version": "1.1.0",
+  "author": "VeriBlock",
+  "bin": {
+    "ncjs-cli": "./bin/run"
+  },
+  "bugs": "https://github.com/VeriBlock/nodecore-js/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "@veriblock/nodecore-js": "^1.6.2"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "eslint": "^5.13",
+    "eslint-config-oclif": "^3.1",
+    "globby": "^10",
+    "prettify": "^0.1.7"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/src"
+  ],
+  "homepage": "https://github.com/VeriBlock/nodecore-js",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "commands": "./src/commands",
+    "bin": "ncjs-cli",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "VeriBlock/nodecore-js",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
