@@ -41,7 +41,8 @@
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
   "dependencies": {
     "@veriblock/nodecore-js": "file:packages/core",
-    "@veriblock/nodecore-parser": "file:packages/parser"
+    "@veriblock/nodecore-parser": "file:packages/parser",
+    "@veriblock/nc-cli": "file:packages/nc-cli"
   },
   "devDependencies": {
     "@types/jest": "^24.9.0",
