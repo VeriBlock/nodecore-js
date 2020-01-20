@@ -28,8 +28,27 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`ncjs-cli bech32`](#ncjs-cli-bech32)
 * [`ncjs-cli decode`](#ncjs-cli-decode)
 * [`ncjs-cli help [COMMAND]`](#ncjs-cli-help-command)
+
+## `ncjs-cli bech32`
+
+Describe the command here
+
+```
+USAGE
+  $ ncjs-cli bech32
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.1.5/src/commands/bech32.js)_
 
 ## `ncjs-cli decode`
 

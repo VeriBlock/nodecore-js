@@ -11,3 +11,4 @@ yarn-error.log
 build
 package-lock.json
 .DS_Store
+yarn.lock

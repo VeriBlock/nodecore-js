@@ -131,7 +131,6 @@ $ ncjs-cli decode --subject 94E097B110BA3ADBB7B6C4C599D31D675DE7BE6E722407410C08
 
 DecodeCommand.flags = entitiesRead.reduce(
   (acc, cur) => {
-    // @ts-ignore
     acc[cur] = entityFlag(cur)();
     return acc;
   },
