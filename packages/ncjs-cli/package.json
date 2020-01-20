@@ -10,7 +10,9 @@
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
+    "@oclif/plugin-autocomplete": "^0.1.5",
     "@oclif/plugin-help": "^2",
+    "@oclif/plugin-warn-if-update-available": "^1.7.0",
     "@veriblock/nodecore-parser": "^1.1.10",
     "bech32-buffer": "^0.1.2"
   },
@@ -40,7 +42,10 @@
     "commands": "./src/commands",
     "bin": "ncjs-cli",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-update",
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-warn-if-update-available"
     ]
   },
   "repository": "VeriBlock/nodecore-js",
