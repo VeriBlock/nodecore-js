@@ -42,7 +42,7 @@
   "dependencies": {
     "@veriblock/nodecore-js": "file:packages/core",
     "@veriblock/nodecore-parser": "file:packages/parser",
-    "@veriblock/nc-cli": "file:packages/nc-cli"
+    "@veriblock/ncjs-cli": "file:packages/ncjs-cli"
   },
   "devDependencies": {
     "@types/jest": "^24.9.0",
