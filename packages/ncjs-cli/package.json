@@ -15,9 +15,9 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
-    "eslint": "^5.13",
+    "eslint": "^6.8",
     "eslint-config-oclif": "^3.1",
-    "globby": "^10",
+    "globby": "^11",
     "prettify": "^0.1.7"
   },
   "engines": {
