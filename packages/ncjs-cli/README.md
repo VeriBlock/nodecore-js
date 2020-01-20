@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.1.5 linux-x64 node-v13.1.0
+ncjs-cli/1.2.0 linux-x64 node-v13.1.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -34,21 +34,21 @@ USAGE
 
 ## `ncjs-cli bech32`
 
-Describe the command here
+Bech32 utils.
 
 ```
 USAGE
   $ ncjs-cli bech32
 
 OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+  -d, --decode=decode    decode bech32 string
+  -e, --encode=encode    encode hex string into bech32
+  -h, --help             show CLI help
+  -p, --prefix=prefix    human-readable prefix for bech32 encoding
+  -v, --version=version  segwit version
 ```
 
-_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.1.5/src/commands/bech32.js)_
+_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.2.0/src/commands/bech32.js)_
 
 ## `ncjs-cli decode`
 
@@ -87,7 +87,7 @@ EXAMPLES
   $ ncjs-cli decode --subject 94E097B110BA3ADBB7B6C4C599D31D675DE7BE6E722407410C08EF352BE585F1 --merklepath <...>
 ```
 
-_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.1.5/src/commands/decode.js)_
+_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.2.0/src/commands/decode.js)_
 
 ## `ncjs-cli help [COMMAND]`
 
