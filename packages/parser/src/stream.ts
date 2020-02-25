@@ -1,6 +1,12 @@
 export class ReadStream {
   private pos = 0;
-  constructor(private readonly data: Buffer) {}
+  private data: Buffer;
+  constructor(inp: Buffer | string) {
+    if (typeof inp === 'string') {
+      inp = Buffer.from(inp, 'hex');
+    }
+    this.data = inp;
+  }
 
   read(size: number): Buffer {
     if (size <= 0) {
