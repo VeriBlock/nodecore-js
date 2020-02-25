@@ -1,6 +1,6 @@
 {
   "name": "@veriblock/nodecore-parser",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "JavaScript/TypeScript parser library for ATVs and VTBs.",
   "main": "./build/node/src/index.js",
   "types": "./build/node/src/index.d.ts",
