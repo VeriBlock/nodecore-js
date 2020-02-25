@@ -17,7 +17,7 @@
     "clean": "gts clean",
     "compile": "tsc -p .",
     "test:all": "yarn test && yarn lint && yarn lint:compat",
-    "lint": "eslint -c ../../.eslintrc_ts.json src --ext .ts",
+    "lint": "eslint -c ../../.eslintrc.json src --ext .ts",
     "lint:compat": "yarn build && eslint -c ../../.eslintrc_compat.json build/node --ext .js",
     "fix": "gts fix",
     "test": "jest",

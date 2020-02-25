@@ -32,7 +32,7 @@ const entitiesRead = [
   'vbkpoptx',
 ];
 
-const entitiesReadExtract = ['merklepath', 'btcblock'];
+const entitiesReadExtract = ['merklepath', 'btcblock', 'vbkblock'];
 
 const entitiesAll = [...entitiesRead, ...entitiesReadExtract];
 
