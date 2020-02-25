@@ -7,12 +7,14 @@
   "files": [
     "build/node/src/**/*.ts",
     "build/node/src/**/*.js",
-    "build/node/src/**/*.map"
+    "build/node/src/**/*.map",
+    "build/browser.parser.veriblock.js"
   ],
   "private": false,
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
+    "build:browser": "webpack-cli",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
@@ -70,7 +72,9 @@
     "stream-buffers": "^3.0.2"
   },
   "devDependencies": {
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   },
   "gitHead": "14ebeb8ca38664eec3ce2a2282ad82f5e12526ba"
 }
