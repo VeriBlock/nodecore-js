@@ -73,38 +73,37 @@ class DecodeCommand extends Command {
       return this.exit(0);
     }
 
+    const extractOrRead = (flag, extract, read) => {
+      // @ts-ignore
+      const raw = flags.raw;
+
+      let json;
+      if (raw) {
+        json = streamWrap(extract)(flag);
+      } else {
+        json = streamWrap(read)(flag);
+      }
+
+      this.log(JSON.stringify(json, null, 2));
+      return this.exit(0);
+    };
+
+    if ('vbkblock' in flags) {
+      return extractOrRead(flags.vbkblock, VbkBlock.extract, VbkBlock.read);
+    }
+
     if ('merklepath' in flags) {
       // @ts-ignore
       const subject = Sha256Hash.fromHex(flags.subject);
-      // @ts-ignore
-      const raw = flags.raw;
-      // @ts-ignore
-      const path = flags.merklepath;
-
-      let json;
-      if (raw) {
-        json = streamWrap(s => MerklePath.extract(s, subject))(path);
-      } else {
-        json = streamWrap(s => MerklePath.read(s, subject))(path);
-      }
-
-      this.log(JSON.stringify(json, null, 2));
-      return this.exit(0);
+      return extractOrRead(
+        flags.merklepath,
+        s => MerklePath.extract(s, subject),
+        s => MerklePath.read(s, subject)
+      );
     }
 
     if ('btcblock' in flags) {
-      const raw = flags.raw;
-      const block = flags.btcblock;
-
-      let json;
-      if (raw) {
-        json = streamWrap(BtcBlock.extract)(block);
-      } else {
-        json = streamWrap(BtcBlock.read)(block);
-      }
-
-      this.log(JSON.stringify(json, null, 2));
-      return this.exit(0);
+      return extractOrRead(flags.btcblock, BtcBlock.extract, BtcBlock.read);
     }
 
     const key = Object.keys(flags)[0];
