@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.3.2 linux-x64 node-v13.12.0
+ncjs-cli/1.4.0 linux-x64 node-v13.12.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -29,10 +29,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`ncjs-cli bech32`](#ncjs-cli-bech32)
-* [`ncjs-cli decode`](#ncjs-cli-decode)
-* [`ncjs-cli dumppublications`](#ncjs-cli-dumppublications)
 * [`ncjs-cli help [COMMAND]`](#ncjs-cli-help-command)
-* [`ncjs-cli printcontext`](#ncjs-cli-printcontext)
 
 ## `ncjs-cli bech32`
 
@@ -50,64 +47,7 @@ OPTIONS
   -v, --version=version  segwit version
 ```
 
-_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/bech32.js)_
-
-## `ncjs-cli decode`
-
-Decode command decodes entities stored as VBK-encoded byte arrays.
-
-```
-USAGE
-  $ ncjs-cli decode
-
-OPTIONS
-  -h, --help                         show CLI help
-  --address=address                  hexencoded ADDRESS
-  --atv=atv                          hexencoded ATV
-  --btcblock=btcblock                hexencoded BTCBLOCK
-  --btctx=btctx                      hexencoded BTCTX
-  --coin=coin                        hexencoded COIN
-  --merklepath=merklepath            hexencoded MERKLEPATH
-  --output=output                    hexencoded OUTPUT
-  --publicationdata=publicationdata  hexencoded PUBLICATIONDATA
-  --raw                              Use raw (non-VBK) encoding when possible
-  --subject=subject                  Manually specified MerklePath subject (32 bytes hexencoded hash)
-  --vbkblock=vbkblock                hexencoded VBKBLOCK
-  --vbkmerklepath=vbkmerklepath      hexencoded VBKMERKLEPATH
-  --vbkpoptx=vbkpoptx                hexencoded VBKPOPTX
-  --vbktx=vbktx                      hexencoded VBKTX
-  --vtb=vtb                          hexencoded VTB
-
-EXAMPLES
-  $ ncjs-cli decode --address 01166772F51AB208D32771AB1506970EEB664462730B838E
-  $ ncjs-cli decode --raw --btcblock 
-  000040203f8e3980304439d853c302f6e496285e110e251251531300000000000000000039a72c22268381bd8d9dcfe002f472634a24cf0454de8b
-  50f89e10891e5ffb1de08d9b5c6c1f2c1744290a92
-  $ ncjs-cli decode --btcblock 
-  50000040203f8e3980304439d853c302f6e496285e110e251251531300000000000000000039a72c22268381bd8d9dcfe002f472634a24cf0454de
-  8b50f89e10891e5ffb1de08d9b5c6c1f2c1744290a92
-  $ ncjs-cli decode --subject 94E097B110BA3ADBB7B6C4C599D31D675DE7BE6E722407410C08EF352BE585F1 --merklepath <...>
-```
-
-_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/decode.js)_
-
-## `ncjs-cli dumppublications`
-
-Describe the command here
-
-```
-USAGE
-  $ ncjs-cli dumppublications
-
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
-```
-
-_See code: [src/commands/dumppublications.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/dumppublications.js)_
+_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.0/src/commands/bech32.js)_
 
 ## `ncjs-cli help [COMMAND]`
 
@@ -125,19 +65,4 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
-
-## `ncjs-cli printcontext`
-
-Print context details of ALT POP TX.
-
-```
-USAGE
-  $ ncjs-cli printcontext
-
-DESCRIPTION
-  Reads STDIN. Expects to get JSON of ALT POP TX.
-  This command parses payloads and outputs context in human-readable form.
-```
-
-_See code: [src/commands/printcontext.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/printcontext.js)_
 <!-- commandsstop -->
