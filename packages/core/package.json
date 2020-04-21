@@ -72,7 +72,7 @@
     "secure-random": "^1.1.2",
     "stream-buffers": "^3.0.2"
   },
-  "gitHead": "2d69323bc2ae8fa82c17ab4b6cb281c540aac321",
+  "gitHead": "7c668827c38a870d3ab5a3c85be72ebc91d150f9",
   "devDependencies": {
     "tsc": "^1.20150623.0",
     "typescript": "^3.8.3",
