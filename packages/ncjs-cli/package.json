@@ -12,7 +12,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
-    "@veriblock/nodecore-parser": "file:../parser",
+    "@veriblock/nodecore-parser": "^1.1.13",
     "bech32-buffer": "^0.1.2"
   },
   "engines": {
@@ -46,5 +46,5 @@
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   },
-  "gitHead": "ed5a41ce5b708ded55dca2a3c8a814bf3506f108"
+  "gitHead": "859a3baeaa230491d99f364814c767483b6d8725"
 }

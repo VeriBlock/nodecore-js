@@ -34,7 +34,8 @@ export class PublicKey {
   // 88 bytes in total
   private readonly _full: Buffer;
 
-  constructor(buffer: Buffer) {
+  constructor(buf: Uint8Array) {
+    const buffer: Buffer = Buffer.from(buf);
     if (
       buffer.length === 88 &&
       buffer[23] === 0x04 &&
@@ -56,7 +57,10 @@ export class PublicKey {
       }
 
       // it is a compressed secp256k1 public key in format [0x0(2|3) + x]
-      const uncompressed: Buffer = secp256k1.publicKeyConvert(buffer, false);
+      const uncompressed: Uint8Array = secp256k1.publicKeyConvert(
+        buffer,
+        false
+      );
       this._full = Buffer.concat([PUBKEY_ASN1_PREFIX, uncompressed]);
     } else {
       throw new Error('unknown public key format');
@@ -164,7 +168,7 @@ export class Signature {
 
   constructor(buffer: Buffer) {
     if (buffer.length === 71) {
-      this._canonical = secp256k1.signatureImport(buffer);
+      this._canonical = Buffer.from(secp256k1.signatureImport(buffer));
     } else if (buffer.length === 64) {
       this._canonical = buffer;
     } else {
@@ -174,7 +178,7 @@ export class Signature {
 
   /// returns full asn1 encoded signature of length 71 bytes
   get asn1(): Buffer {
-    return secp256k1.signatureExport(this._canonical);
+    return Buffer.from(secp256k1.signatureExport(this._canonical));
   }
 
   /// returns canonical secp256k1 signature with length 64 bytes
@@ -250,8 +254,8 @@ export class SHA256withECDSA {
     }
 
     const m = sha256(msg);
-    const sig = secp256k1.sign(m, privateKey.canonical);
-    return new Signature(sig.signature);
+    const sig = secp256k1.ecdsaSign(m, privateKey.canonical);
+    return new Signature(Buffer.from(sig.signature));
   }
 
   static verify(
@@ -263,6 +267,6 @@ export class SHA256withECDSA {
       publicKey = publicKey.publicKey;
     }
     const m = sha256(msg);
-    return secp256k1.verify(m, sig.canonical, publicKey.uncompressed);
+    return secp256k1.ecdsaVerify(m, sig.canonical, publicKey.uncompressed);
   }
 }
