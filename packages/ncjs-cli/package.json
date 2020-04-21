@@ -15,9 +15,7 @@
     "@veriblock/nodecore-parser": "^1.1.14",
     "bech32-buffer": "^0.1.2"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=10.0.0"
   },
@@ -49,5 +47,5 @@
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   },
-  "gitHead": "a65bf699e451794acc51c9bf3654160b0e4afb52"
+  "gitHead": "9990ec4449babb42325af6d8845e549df254bbf4"
 }
