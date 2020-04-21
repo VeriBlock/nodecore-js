@@ -1,7 +1,7 @@
 {
   "name": "ncjs-cli",
   "description": "NodeCore CLI",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "VeriBlock",
   "bin": {
     "ncjs-cli": "./bin/run"
@@ -12,7 +12,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
-    "@veriblock/nodecore-parser": "^1.1.13",
+    "@veriblock/nodecore-parser": "^1.1.14",
     "bech32-buffer": "^0.1.2"
   },
   "engines": {

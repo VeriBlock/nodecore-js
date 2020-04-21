@@ -1,6 +1,6 @@
 {
   "name": "@veriblock/nodecore-js",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "description": "JavaScript/TypeScript libraries for veriblock nodecore repo.",
   "main": "./build/node/src/index.js",
   "types": "./build/node/src/index.d.ts",
