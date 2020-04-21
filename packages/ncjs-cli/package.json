@@ -49,5 +49,5 @@
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   },
-  "gitHead": "7c668827c38a870d3ab5a3c85be72ebc91d150f9"
+  "gitHead": "e9c6707c6f16dc136d63265626a11f7516b9276e"
 }
