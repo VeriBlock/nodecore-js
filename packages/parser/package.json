@@ -62,7 +62,7 @@
   },
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
   "dependencies": {
-    "@veriblock/nodecore-js": "^1.6.6",
+    "@veriblock/nodecore-js": "file:../core",
     "base-x": "^3.0.7",
     "bignumber.js": "^9.0.0",
     "fast-sha256": "^1.3.0",
@@ -71,10 +71,5 @@
     "secure-random": "^1.1.2",
     "stream-buffers": "^3.0.2"
   },
-  "devDependencies": {
-    "typescript": "^3.7.4",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
-  },
-  "gitHead": "14ebeb8ca38664eec3ce2a2282ad82f5e12526ba"
+  "gitHead": "ed5a41ce5b708ded55dca2a3c8a814bf3506f108"
 }

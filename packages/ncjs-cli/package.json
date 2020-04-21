@@ -12,15 +12,8 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
-    "@veriblock/nodecore-parser": "^1.1.13",
+    "@veriblock/nodecore-parser": "file:../parser",
     "bech32-buffer": "^0.1.2"
-  },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "eslint": "^6.8",
-    "eslint-config-oclif": "^3.1",
-    "globby": "^11",
-    "prettify": "^0.1.7"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -53,5 +46,5 @@
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   },
-  "gitHead": "a1752a1e21509d336e9241dead31f607f7ee8032"
+  "gitHead": "ed5a41ce5b708ded55dca2a3c8a814bf3506f108"
 }

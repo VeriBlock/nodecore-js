@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "packages",
+    "baseUrl": "./packages",
     "paths": {
       "@veriblock/nodecore-js": ["./core"],
       "@veriblock/nodecore-parser": ["./parser"]

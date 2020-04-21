@@ -72,8 +72,5 @@
     "secure-random": "^1.1.2",
     "stream-buffers": "^3.0.2"
   },
-  "devDependencies": {
-    "typescript": "^3.7.4"
-  },
-  "gitHead": "14ebeb8ca38664eec3ce2a2282ad82f5e12526ba"
+  "gitHead": "ed5a41ce5b708ded55dca2a3c8a814bf3506f108"
 }
