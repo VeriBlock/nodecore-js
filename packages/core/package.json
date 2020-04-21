@@ -68,9 +68,15 @@
     "fast-sha256": "^1.3.0",
     "fp-ts": "^2.4.1",
     "io-ts": "^2.0.5",
-    "secp256k1": "3.8.0",
+    "secp256k1": "^4.0.0",
     "secure-random": "^1.1.2",
     "stream-buffers": "^3.0.2"
   },
-  "gitHead": "859a3baeaa230491d99f364814c767483b6d8725"
+  "gitHead": "59f3cc1c9d4a21955aa92ebf5b0b8ade4328f6ed",
+  "devDependencies": {
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
 }
