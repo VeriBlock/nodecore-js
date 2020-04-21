@@ -14,7 +14,6 @@ class DumppublicationsCommand extends Command {
     }
 
     const out = JSON.stringify(data, null, 2);
-    this.log(out);
 
     fs.writeFileSync(file, out);
     this.log(`DONE: Written to ${file}`);
