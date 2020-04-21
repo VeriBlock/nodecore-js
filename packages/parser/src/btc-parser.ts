@@ -86,6 +86,7 @@ const evalScript = (script: Buffer): Publications => {
             throw new Error(`expected VTB, but stack is empty`);
           }
 
+          publications.vtbshex.push(vtb.toString('hex'));
           publications.vtbs.push(VTB.read(new ReadStream(vtb)));
           break;
         }
@@ -99,6 +100,7 @@ const evalScript = (script: Buffer): Publications => {
             throw new Error(`found second ATV`);
           }
 
+          publications.atvhex = atv.toString('hex');
           publications.atv = ATV.read(new ReadStream(atv));
           break;
         }

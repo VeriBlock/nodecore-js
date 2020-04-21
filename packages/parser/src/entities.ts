@@ -619,6 +619,8 @@ export class Context {
 }
 
 export class Publications {
+  atvhex?: string = undefined;
+  vtbshex: string[] = [];
   atv?: ATV = undefined;
   vtbs: VTB[] = [];
   context: Context = new Context();

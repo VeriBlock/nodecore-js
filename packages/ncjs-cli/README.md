@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.3.2 linux-x64 node-v11.11.0
+ncjs-cli/1.3.2 linux-x64 node-v13.12.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -30,7 +30,9 @@ USAGE
 <!-- commands -->
 * [`ncjs-cli bech32`](#ncjs-cli-bech32)
 * [`ncjs-cli decode`](#ncjs-cli-decode)
+* [`ncjs-cli dumppublications`](#ncjs-cli-dumppublications)
 * [`ncjs-cli help [COMMAND]`](#ncjs-cli-help-command)
+* [`ncjs-cli printcontext`](#ncjs-cli-printcontext)
 
 ## `ncjs-cli bech32`
 
@@ -89,6 +91,24 @@ EXAMPLES
 
 _See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/decode.js)_
 
+## `ncjs-cli dumppublications`
+
+Describe the command here
+
+```
+USAGE
+  $ ncjs-cli dumppublications
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/dumppublications.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/dumppublications.js)_
+
 ## `ncjs-cli help [COMMAND]`
 
 display help for ncjs-cli
@@ -105,4 +125,19 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
+
+## `ncjs-cli printcontext`
+
+Print context details of ALT POP TX.
+
+```
+USAGE
+  $ ncjs-cli printcontext
+
+DESCRIPTION
+  Reads STDIN. Expects to get JSON of ALT POP TX.
+  This command parses payloads and outputs context in human-readable form.
+```
+
+_See code: [src/commands/printcontext.js](https://github.com/VeriBlock/nodecore-js/blob/v1.3.2/src/commands/printcontext.js)_
 <!-- commandsstop -->
