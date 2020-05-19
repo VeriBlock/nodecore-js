@@ -2,7 +2,7 @@
 
 To include in HTML, use this link:
 ```
-https://unpkg.com/@veriblock/nodecore-js/build/browser.veriblock.js
+https://unpkg.com/@veriblock/vblake@1.0.0/vblake_module.js
 ```
 
 ### Build:
