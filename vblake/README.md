@@ -1,5 +1,10 @@
 # WASM bindings on top of C/C++ vblake implementation from alt-integration-cpp
 
+To include in HTML, use this link:
+```
+https://unpkg.com/@veriblock/nodecore-js/build/browser.veriblock.js
+```
+
 ### Build:
 
 1. Install emsdk - https://emscripten.org/docs/getting_started/downloads.html
