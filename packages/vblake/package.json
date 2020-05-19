@@ -2,12 +2,17 @@
   "name": "@veriblock/vblake",
   "version": "1.0.0",
   "description": "Fast hash function for VeriBlock",
-  "main": "index.js",
+  "main": "vblake_module.js",
+  "files": [
+    "vblake_module.js",
+    "package.json"
+  ],
   "author": "VeriBlock",
   "license": "MIT",
   "devDependencies": {
     "jest": "^26.0.1"
   },
+  "private": false,
   "jest": {
     "moduleFileExtensions": [
       "js",
@@ -24,14 +29,11 @@
   },
   "keywords": [
     "js",
+    "wasm",
     "nodecore",
     "veriblock",
     "vblake",
     "hash"
   ],
-  "dependencies": {
-    "bignumber.js": "^9.0.0",
-    "node-int64": "^0.4.0",
-    "node-wasm": "^0.1.4"
-  }
+  "dependencies": {}
 }
