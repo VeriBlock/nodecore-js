@@ -1,0 +1,37 @@
+{
+  "name": "@veriblock/vblake",
+  "version": "1.0.0",
+  "description": "Fast hash function for VeriBlock",
+  "main": "index.js",
+  "author": "VeriBlock",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ],
+    "rootDir": ".",
+    "testRegex": ".spec.js$",
+    "coverageDirectory": "coverage",
+    "testEnvironment": "jsdom"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/VeriBlock/nodecore-js.git"
+  },
+  "keywords": [
+    "js",
+    "nodecore",
+    "veriblock",
+    "vblake",
+    "hash"
+  ],
+  "dependencies": {
+    "bignumber.js": "^9.0.0",
+    "node-int64": "^0.4.0",
+    "node-wasm": "^0.1.4"
+  }
+}
