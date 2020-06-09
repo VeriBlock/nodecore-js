@@ -3,6 +3,7 @@ CXX=em++
 OPTIONS=\
 	-s NO_EXIT_RUNTIME=1 \
 	-s WASM=1 \
+	-s MODULARIZE=1 \
 	-s DISABLE_EXCEPTION_CATCHING=1 \
 	-s ALLOW_MEMORY_GROWTH=0 \
 	--closure 1 \
