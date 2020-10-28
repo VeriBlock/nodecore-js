@@ -27,7 +27,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "preinstall": "npm ln @veriblock/nodecore-parser ../packages/parser"
   },
   "eslintConfig": {
     "extends": "react-app"
