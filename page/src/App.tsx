@@ -19,19 +19,8 @@ import {
   VTB,
 } from '@veriblock/nodecore-parser';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  Container,
-  Row,
-  Col,
-  FormCheck,
-  Dropdown,
-  InputGroup,
-  DropdownButton,
-  FormControl,
-  Form,
-  Button,
-  ButtonGroup,
-} from 'react-bootstrap';
+import { Col, Container, Form, Row } from 'react-bootstrap';
+
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/theme/neat.css');
