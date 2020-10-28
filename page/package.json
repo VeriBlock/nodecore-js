@@ -10,7 +10,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
-    "@veriblock/nodecore-parser": "file:../packages/parser",
+    "@veriblock/nodecore-parser": "*",
     "bootstrap": "^4.4.1",
     "buffer": "^5.4.3",
     "codemirror": "^5.52.0",
@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preinstall": "npm ln @veriblock/nodecore-parser ../packages/parser"
   },
   "eslintConfig": {
     "extends": "react-app"
