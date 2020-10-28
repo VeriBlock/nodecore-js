@@ -125,7 +125,7 @@ function App() {
     } catch (e) {
       setDecoded(`${e.stack}`);
     }
-  }, [hex, raw, entity]);
+  }, [hex, raw, entity, subject]);
 
   return (
     <Container className="App">
