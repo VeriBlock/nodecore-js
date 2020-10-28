@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export class ReadStream {
   private pos = 0;
   private data: Buffer;
@@ -61,8 +63,11 @@ export class ReadStream {
   }
 
   readUInt64From5Bytes(): number {
-    const buf = this.read(5)
-    return buf.readUInt32BE() << 8 | buf[buf.length - 1]
+    const buf = this.read(5);
+    const uint32 = buf.readUInt32BE(0);
+    const last = buf.readUInt8(4);
+    const ret = new BigNumber(uint32).multipliedBy(256).plus(last);
+    return ret.toNumber();
   }
 
   position(): number {
@@ -154,12 +159,12 @@ export class WriteStream {
   }
 
   writeUInt64BEto5Bytes(n: number): void {
-    const uint32 = n >> 8
-    const first = n >> 32
-    this.data.writeUInt8(first, this.pos)
-    this.pos += 1
-    this.data.writeUInt32BE(uint32, this.pos)
-    this.pos += 4
+    const uint32 = n >> 8;
+    const first = n >> 32;
+    this.data.writeUInt8(first, this.pos);
+    this.pos += 1;
+    this.data.writeUInt32BE(uint32, this.pos);
+    this.pos += 4;
   }
 
   writeInt16BE(n: number): void {
