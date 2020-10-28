@@ -12,7 +12,6 @@ import {
   BTC_HEADER_SIZE,
   HASH256_SIZE,
   MAX_CONTEXT_COUNT,
-  MAX_CONTEXT_COUNT_ALT_PUBLICATION,
   MAX_CONTEXT_SIZE_PUBLICATION_DATA,
   MAX_HEADER_SIZE_PUBLICATION_DATA,
   MAX_LAYER_COUNT_MERKLE,
@@ -263,7 +262,7 @@ export class VbkBlock {
     readonly merkleRoot: Sha256Hash,
     readonly timestamp: Int,
     readonly difficulty: Int,
-    readonly nonce: Int
+    readonly nonce: bigint
   ) {}
 
   serialize(): Buffer {
@@ -276,7 +275,7 @@ export class VbkBlock {
     stream.write(this.merkleRoot.data);
     stream.writeInt32BE(this.timestamp);
     stream.writeInt32BE(this.difficulty);
-    stream.writeInt32BE(this.nonce);
+    stream.writeUInt64BEBytes(this.nonce, 5);
     return stream.data;
   }
 
@@ -297,7 +296,7 @@ export class VbkBlock {
     const merkleRoot = Sha256Hash.extract(stream, VBK_MERKLE_ROOT_LENGTH);
     const timestamp = stream.readInt32BE();
     const difficulty = stream.readInt32BE();
-    const nonce = stream.readInt32BE();
+    const nonce = stream.readUInt64FromBytes(5);
 
     return new VbkBlock(
       height,
@@ -563,53 +562,43 @@ export class VbkMerklePath {
 // AltPublication
 export class ATV {
   constructor(
+    readonly version: number,
     readonly transaction: VbkTx,
     readonly merklePath: VbkMerklePath,
-    readonly containingBlock: VbkBlock,
-    readonly context: VbkBlock[]
+    readonly containingBlock: VbkBlock
   ) {}
 
   static read(stream: ReadStream): ATV {
+    const version = stream.readUInt32BE();
+    if (version !== 1) {
+      throw new Error(`Expected ATV version=1, got=${version}`);
+    }
     const transaction = VbkTx.read(stream);
     const merklePath = VbkMerklePath.read(stream);
     const containingBlock = VbkBlock.read(stream);
 
-    const contextBlocks = readArrayOf<VbkBlock>(
-      stream,
-      0,
-      4,
-      0,
-      MAX_CONTEXT_COUNT_ALT_PUBLICATION,
-      VbkBlock.read
-    );
-
-    return new ATV(transaction, merklePath, containingBlock, contextBlocks);
+    return new ATV(version, transaction, merklePath, containingBlock);
   }
 }
 
 export class VTB {
   constructor(
+    readonly version: number,
     readonly transaction: VbkPopTx,
     readonly merklePath: VbkMerklePath,
-    readonly containingBlock: VbkBlock,
-    readonly context: VbkBlock[]
+    readonly containingBlock: VbkBlock
   ) {}
 
   static read(stream: ReadStream): VTB {
+    const version = stream.readUInt32BE();
+    if (version !== 1) {
+      throw new Error(`Expected VTB version=1, got=${version}`);
+    }
     const transaction = VbkPopTx.read(stream);
     const merklePath = VbkMerklePath.read(stream);
     const containingBlock = VbkBlock.read(stream);
 
-    const contextBlocks = readArrayOf<VbkBlock>(
-      stream,
-      0,
-      4,
-      0,
-      MAX_CONTEXT_COUNT_ALT_PUBLICATION,
-      VbkBlock.read
-    );
-
-    return new VTB(transaction, merklePath, containingBlock, contextBlocks);
+    return new VTB(version, transaction, merklePath, containingBlock);
   }
 }
 

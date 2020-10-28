@@ -42,7 +42,7 @@
   "dependencies": {
     "@veriblock/nodecore-js": "file:packages/core",
     "@veriblock/nodecore-parser": "file:packages/parser",
-    "ncjs-cli": "file:packages/ncjs-cli",
+    "ncjs-cli": "file:packages/ncjs-cli"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",

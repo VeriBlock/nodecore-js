@@ -8,7 +8,7 @@ export const MAX_MERKLE_BYTES =
   (HASH256_SIZE + 1) * MAX_LAYER_COUNT_MERKLE + 5 + 5 + 5 + 5 + 4;
 
 export const BTC_HEADER_SIZE = 80;
-export const VBK_HEADER_SIZE = 64;
+export const VBK_HEADER_SIZE = 65;
 
 // according to BIP 141 maximum block size is 4000000 bytes
 export const MAX_BTC_RAWTX_SIZE = 4000000;
