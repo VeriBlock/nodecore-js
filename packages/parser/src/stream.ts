@@ -1,5 +1,3 @@
-import { pad } from './utils';
-
 export class ReadStream {
   private pos = 0;
   private data: Buffer;
@@ -62,13 +60,9 @@ export class ReadStream {
     return this.read(4).readUInt32LE(0);
   }
 
-  readUInt64FromBytes(bytes: number): bigint {
-    if (bytes > 8) {
-      throw new Error(`can't read uint64 from ${bytes} bytes`);
-    }
-    const buf = this.read(bytes);
-    const padded = pad(buf, 8);
-    return padded.readBigUInt64BE(0);
+  readUInt64From5Bytes(): number {
+    const buf = this.read(5)
+    return buf.readUInt32BE() << 8 | buf[buf.length - 1]
   }
 
   position(): number {
@@ -159,17 +153,13 @@ export class WriteStream {
     this.pos += 4;
   }
 
-  writeUInt64BEBytes(n: bigint, bytes: number): void {
-    if (bytes > 8) {
-      throw new Error(`can not write UInt64BE ${bytes}`);
-    }
-
-    const buf = Buffer.alloc(8);
-    buf.writeBigUInt64BE(n, 0);
-    for (let i = 0; i < bytes; i++) {
-      this.data[this.pos + i] = buf[i];
-    }
-    this.pos += bytes;
+  writeUInt64BEto5Bytes(n: number): void {
+    const uint32 = n >> 8
+    const first = n >> 32
+    this.data.writeUInt8(first, this.pos)
+    this.pos += 1
+    this.data.writeUInt32BE(uint32, this.pos)
+    this.pos += 4
   }
 
   writeInt16BE(n: number): void {

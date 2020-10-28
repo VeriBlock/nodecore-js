@@ -262,7 +262,7 @@ export class VbkBlock {
     readonly merkleRoot: Sha256Hash,
     readonly timestamp: Int,
     readonly difficulty: Int,
-    readonly nonce: bigint
+    readonly nonce: number
   ) {}
 
   serialize(): Buffer {
@@ -275,7 +275,7 @@ export class VbkBlock {
     stream.write(this.merkleRoot.data);
     stream.writeInt32BE(this.timestamp);
     stream.writeInt32BE(this.difficulty);
-    stream.writeUInt64BEBytes(this.nonce, 5);
+    stream.writeUInt64BEto5Bytes(this.nonce);
     return stream.data;
   }
 
@@ -296,7 +296,7 @@ export class VbkBlock {
     const merkleRoot = Sha256Hash.extract(stream, VBK_MERKLE_ROOT_LENGTH);
     const timestamp = stream.readInt32BE();
     const difficulty = stream.readInt32BE();
-    const nonce = stream.readUInt64FromBytes(5);
+    const nonce = stream.readUInt64From5Bytes();
 
     return new VbkBlock(
       height,
