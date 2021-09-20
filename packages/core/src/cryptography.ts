@@ -58,7 +58,7 @@ export class PublicKey {
 
       // it is a compressed secp256k1 public key in format [0x0(2|3) + x]
       const uncompressed: Uint8Array = secp256k1.publicKeyConvert(
-        buffer,
+        new Uint8Array(buffer),
         false
       );
       this._full = Buffer.concat([PUBKEY_ASN1_PREFIX, uncompressed]);
@@ -146,7 +146,7 @@ export class PrivateKey {
   }
 
   derivePublicKey(): PublicKey {
-    const buf = secp256k1.publicKeyCreate(this.canonical, true);
+    const buf = secp256k1.publicKeyCreate(new Uint8Array(this.canonical), true);
     return new PublicKey(buf);
   }
 
@@ -168,7 +168,9 @@ export class Signature {
 
   constructor(buffer: Buffer) {
     if (buffer.length === 71) {
-      this._canonical = Buffer.from(secp256k1.signatureImport(buffer));
+      this._canonical = Buffer.from(
+        secp256k1.signatureImport(new Uint8Array(buffer))
+      );
     } else if (buffer.length === 64) {
       this._canonical = buffer;
     } else {
@@ -178,7 +180,9 @@ export class Signature {
 
   /// returns full asn1 encoded signature of length 71 bytes
   get asn1(): Buffer {
-    return Buffer.from(secp256k1.signatureExport(this._canonical));
+    return Buffer.from(
+      secp256k1.signatureExport(new Uint8Array(this._canonical))
+    );
   }
 
   /// returns canonical secp256k1 signature with length 64 bytes
@@ -212,6 +216,7 @@ export class KeyPair {
   }
 
   static generate(entropy?: Buffer | undefined): KeyPair {
+    /*eslint-disable */
     if (!entropy) {
       entropy = secureRandom(32);
     }
@@ -222,7 +227,7 @@ export class KeyPair {
 
     const priv = new PrivateKey(sha256(entropy!));
     const pub = priv.derivePublicKey();
-
+    /*eslint-enable */
     return new KeyPair(pub, priv);
   }
 
@@ -253,8 +258,8 @@ export class SHA256withECDSA {
       privateKey = privateKey.privateKey;
     }
 
-    const m = sha256(msg);
-    const sig = secp256k1.ecdsaSign(m, privateKey.canonical);
+    const m: Uint8Array = new Uint8Array(sha256(msg));
+    const sig = secp256k1.ecdsaSign(m, new Uint8Array(privateKey.canonical));
     return new Signature(Buffer.from(sig.signature));
   }
 
@@ -266,7 +271,8 @@ export class SHA256withECDSA {
     if (publicKey instanceof KeyPair) {
       publicKey = publicKey.publicKey;
     }
-    const m = sha256(msg);
-    return secp256k1.ecdsaVerify(m, sig.canonical, publicKey.uncompressed);
+    const m: Uint8Array = new Uint8Array(sha256(msg));
+    const s: Uint8Array = new Uint8Array(sig.canonical);
+    return secp256k1.ecdsaVerify(s, m, new Uint8Array(publicKey.uncompressed));
   }
 }

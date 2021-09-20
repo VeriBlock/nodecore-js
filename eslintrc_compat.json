@@ -1,0 +1,10 @@
+{
+  "plugins": ["compat"],
+  "rules": {
+    "compat/compat": "error"
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  }
+}

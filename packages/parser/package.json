@@ -19,8 +19,8 @@
     "clean": "gts clean",
     "compile": "tsc -p .",
     "test:all": "yarn test && yarn lint && yarn lint:compat",
-    "lint": "eslint -c ../../.eslintrc.json src --ext .ts",
-    "lint:compat": "yarn build && eslint -c ../../.eslintrc_compat.json build/node --ext .js",
+    "lint": "eslint -c ../../eslintrc_ts.json src --ext .ts",
+    "lint:compat": "yarn build && eslint -c ../../eslintrc_compat.json build/node/src --ext .js",
     "fix": "gts fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -29,6 +29,9 @@
     "posttest": "npm run check",
     "prepare": "npm run build"
   },
+  "browserslist": [
+    "defaults"
+  ],
   "jest": {
     "moduleFileExtensions": [
       "js",

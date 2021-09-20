@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [10.x, 12.x, 14.x, 16.x]
+      fail-fast: false
     env:
       CI: true
     steps:
@@ -24,7 +25,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm run bootstrap
-    - run: npm run link:all
-    - run: npm run build
-    - run: npm run test:all
+    - run: npm i -g lerna
+    - run: lerna bootstrap
+    - run: lerna run build
+    - run: lerna link
+    - run: lerna run test:all
