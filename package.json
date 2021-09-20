@@ -18,6 +18,9 @@
     "test:cov": "lerna run test:cov",
     "publish": "npx lerna publish"
   },
+  "browserslist": [
+    "defaults"
+  ],
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/VeriBlock/nodecore-js.git"

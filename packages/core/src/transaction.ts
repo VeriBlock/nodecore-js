@@ -68,7 +68,7 @@ export const signTransaction = (
     transaction,
   };
 };
-
+/*eslint-disable */
 const tryDeserialize = <T extends Decoder<{}, any>>(
   arg: {},
   schema: T
@@ -97,3 +97,4 @@ export const tryDeserializeTransaction = (arg: {}): Transaction => {
 export const trySerializeTransaction = (arg: Transaction): any => {
   return trySerialize(arg, transactionT);
 };
+/*eslint-enable */
