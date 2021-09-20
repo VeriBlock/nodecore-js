@@ -35,22 +35,22 @@ jobs:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-  sonar:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - run: npm install
-    - run: npm run build
-    - run: npm test
-    - run: npm run test:cov
-    - name: setup sonar-scanner
-      uses: warchant/setup-sonar-scanner@v1
-    - name: run sonar-scanner
-      # run only on push to develop/master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }} || true
+#  sonar:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v1
+#    - name: Use Node.js 12.x
+#      uses: actions/setup-node@v1
+#      with:
+#        node-version: 12.x
+#    - run: npm install
+#    - run: npm run build
+#    - run: npm test
+#    - run: npm run test:cov
+#    - name: setup sonar-scanner
+#      uses: warchant/setup-sonar-scanner@v1
+#    - name: run sonar-scanner
+#      # run only on push to develop/master
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }} || true
