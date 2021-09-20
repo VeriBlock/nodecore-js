@@ -65,7 +65,7 @@
   },
   "homepage": "https://github.com/VeriBlock/nodecore-js#readme",
   "dependencies": {
-    "@veriblock/nodecore-js": "^1.6.8",
+    "@veriblock/nodecore-js": "^1.6.9",
     "base-x": "^3.0.7",
     "bignumber.js": "^9.0.0",
     "fast-sha256": "^1.3.0",

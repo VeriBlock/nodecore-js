@@ -12,7 +12,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
-    "@veriblock/nodecore-parser": "^1.1.15",
+    "@veriblock/nodecore-parser": "^1.2.3",
     "bech32-buffer": "^0.1.2"
   },
   "devDependencies": {

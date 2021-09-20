@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.4.3 linux-x64 node-v13.12.0
+ncjs-cli/1.4.3 linux-x64 node-v15.11.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -120,7 +120,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.3/src/commands/help.ts)_
 
 ## `ncjs-cli printcontext`
 
