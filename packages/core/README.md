@@ -147,10 +147,12 @@ var kp = VeriBlock.KeyPair.generate()
 
 4. deserialize rawTx into modelTx, sign it with queried signatureIndex (in our example signatureIndex=13)
    ```js
+   const networkByte = undefined; // mainnet
+   const networkByte = 0xaa;      // testnet
    // deserialize rawTx
    const modelTx = tryDeserializeTransaction(rawTx); // may throw
    // sign it
-   const signedModelTx = signTransaction(modelTx, keyPair, signatureIndex);
+   const signedModelTx = signTransaction(modelTx, keyPair, signatureIndex, networkByte);
    // serialize back to raw signed transaction
    const rawSignedTx = trySerializeSignedTransaction(signedModelTx); // may throw
    ```

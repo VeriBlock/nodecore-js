@@ -19,11 +19,7 @@ const keypair = KeyPair.fromPrivateKey(
 
 // or 'mainnet'
 const network = 'testnet';
-const port = (function() {
-  if (network === 'testnet') return 10600;
-  if (network === 'mainnet') return 10500;
-  throw Error('Unknown network');
-})(); // full node port
+const port = 10600
 const host = '127.0.0.1'; // full node address
 const addr = `http://${host}:${port}/api`;
 
