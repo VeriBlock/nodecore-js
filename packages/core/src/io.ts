@@ -124,7 +124,6 @@ export const transactionT = t.exact(
     sourceAddress: addressT,
     sourceAmount: amountT,
     outputs: t.array(outputT),
-    networkByte: t.union([byteT, t.undefined]),
     data: dataT,
     transactionFee: t.union([amountT, t.undefined]),
     txId: t.union([t.string, t.undefined]),

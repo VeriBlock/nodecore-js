@@ -105,11 +105,16 @@ const writeAddress = (stream: WritableStreamBuffer, address: string): void => {
 
 export const serializeTransactionEffects = (
   tx: Transaction,
-  signatureIndex: number
+  signatureIndex: number,
+  networkByte: number | undefined = undefined
 ): Buffer => {
   const stream = new WritableStreamBuffer({
     initialSize: 1000,
   });
+
+  if (networkByte !== undefined) {
+    stream.write(Buffer.from([networkByte]));
+  }
 
   if (isValidStandardAddress(tx.sourceAddress)) {
     stream.write(Buffer.from([AddressType.STANDARD]));

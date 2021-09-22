@@ -22,7 +22,7 @@ const PRIVATE_KEY = Buffer.from(
 
 const kp = KeyPair.fromPrivateKey(PRIVATE_KEY);
 
-test('create transaction', () => {
+test('create transaction mainnet', () => {
   // 1. create an unsigned transaction as JS object
   // fee in this case is 100701000-100000000=701000
   // 1 VBK = 1000_000_000 units
@@ -38,7 +38,7 @@ test('create transaction', () => {
   };
 
   // 2. get your signatureIndex with getsignatureindex query
-  const signatureIndex = 0;
+  const signatureIndex = 13;
 
   // 3. deserialize it to model object
   const obj = tryDeserializeTransaction(tx);
@@ -50,6 +50,7 @@ test('create transaction', () => {
   const signedTxObj = trySerializeSignedTransaction(signedTxModel);
 
   expect(signedTxObj.publicKey).toBeDefined();
+  expect(signedTxObj.publicKey).toEqual(kp.publicKey.toStringHex());
   expect(signedTxObj.signature).toBeDefined();
   expect(signedTxObj.transaction).toBeDefined();
   expect(signedTxObj.signatureIndex).toBeDefined();
@@ -69,7 +70,66 @@ test('create transaction', () => {
   expect(signedTxObj.transaction.data).toEqual('');
   expect(signedTxObj.transaction.type).toEqual(1);
   expect(signedTxObj.transaction.txId).toEqual(
+    'ffc717462162ebc5e8730cc82b225f998c878be9fc47eb251ccc948cf2d2d296'
+  );
+  expect(signedTxObj.transaction.txId).toEqual(
     getTransactionId(obj, signatureIndex).toString('hex')
+  );
+});
+
+test('create transaction testnet', () => {
+  // 1. create an unsigned transaction as JS object
+  // fee in this case is 100701000-100000000=701000
+  // 1 VBK = 1000_000_000 units
+  const tx = {
+    sourceAddress: 'V9Jr1bqi57NzCkfSEJ5mRzW5NA2cQw',
+    sourceAmount: '100010000',
+    outputs: [
+      {
+        address: 'V9Jr1bqi57NzCkfSEJ5mRzW5NA2cQw',
+        amount: '100000000',
+      },
+    ],
+  };
+
+  // 2. get your signatureIndex with getsignatureindex query
+  const signatureIndex = 0;
+  const networkByte = 0xaa; // testnet
+
+  // 3. deserialize it to model object
+  const obj = tryDeserializeTransaction(tx);
+
+  // 4. sign it
+  const signedTxModel = signTransaction(obj, kp, signatureIndex, networkByte);
+
+  // 5. serialize to JS object
+  const signedTxObj = trySerializeSignedTransaction(signedTxModel);
+
+  expect(signedTxObj.publicKey).toBeDefined();
+  expect(signedTxObj.publicKey).toEqual(kp.publicKey.toStringHex());
+  expect(signedTxObj.signature).toBeDefined();
+  expect(signedTxObj.transaction).toBeDefined();
+  expect(signedTxObj.signatureIndex).toBeDefined();
+  expect(signedTxObj.signatureIndex).toEqual(signatureIndex);
+  expect(signedTxObj.transaction.sourceAddress).toEqual(
+      'V9Jr1bqi57NzCkfSEJ5mRzW5NA2cQw'
+  );
+  expect(signedTxObj.transaction.sourceAmount).toEqual('100010000');
+  expect(signedTxObj.transaction.outputs).toHaveLength(1);
+  expect(signedTxObj.transaction.outputs[0].address).toEqual(
+      'V9Jr1bqi57NzCkfSEJ5mRzW5NA2cQw'
+  );
+  expect(signedTxObj.transaction.outputs[0].amount).toEqual('100000000');
+
+  // added fields after signTransaction
+  expect(signedTxObj.transaction.transactionFee).toEqual('10000');
+  expect(signedTxObj.transaction.data).toEqual('');
+  expect(signedTxObj.transaction.type).toEqual(1);
+  expect(signedTxObj.transaction.txId).toEqual(
+      '8835e33cd6fcc720906d44138cccbc2607001f05836c87eb808afb59099c6831'
+  );
+  expect(signedTxObj.transaction.txId).toEqual(
+      getTransactionId(obj, signatureIndex, networkByte).toString('hex')
   );
 });
 

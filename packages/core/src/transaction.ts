@@ -22,19 +22,21 @@ import { Decoder, Encoder } from 'io-ts';
 
 export const getTransactionId = (
   tx: Transaction,
-  signatureIndex: SignatureIndex
+  signatureIndex: SignatureIndex,
+  networkByte: number | undefined = undefined
 ): Buffer => {
-  const ser = serializeTransactionEffects(tx, signatureIndex);
+  const ser = serializeTransactionEffects(tx, signatureIndex, networkByte);
   return sha256(ser);
 };
 
 export const signTransaction = (
   transaction: Transaction,
   keyPair: KeyPair,
-  signatureIndex: SignatureIndex
+  signatureIndex: SignatureIndex,
+  networkByte: number | undefined = undefined
 ): SignedTransaction => {
-  // set txId
-  const id: Buffer = getTransactionId(transaction, signatureIndex);
+  // set txIdTx
+  const id: Buffer = getTransactionId(transaction, signatureIndex, networkByte);
   transaction.txId = id.toString('hex');
 
   // set tx data
