@@ -19,7 +19,7 @@ $ npm install -g ncjs-cli
 $ ncjs-cli COMMAND
 running command...
 $ ncjs-cli (-v|--version|version)
-ncjs-cli/1.4.3 linux-x64 node-v15.11.0
+ncjs-cli/1.4.4 linux-x64 node-v15.11.0
 $ ncjs-cli --help [COMMAND]
 USAGE
   $ ncjs-cli COMMAND
@@ -50,7 +50,7 @@ OPTIONS
   -v, --version=version  segwit version
 ```
 
-_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.3/src/commands/bech32.js)_
+_See code: [src/commands/bech32.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.4/src/commands/bech32.js)_
 
 ## `ncjs-cli decode`
 
@@ -89,7 +89,7 @@ EXAMPLES
   $ ncjs-cli decode --subject 94E097B110BA3ADBB7B6C4C599D31D675DE7BE6E722407410C08EF352BE585F1 --merklepath <...>
 ```
 
-_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.3/src/commands/decode.js)_
+_See code: [src/commands/decode.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.4/src/commands/decode.js)_
 
 ## `ncjs-cli dumppublications`
 
@@ -103,7 +103,7 @@ OPTIONS
   -o, --file=file  output file (default: payloads.json)
 ```
 
-_See code: [src/commands/dumppublications.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.3/src/commands/dumppublications.js)_
+_See code: [src/commands/dumppublications.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.4/src/commands/dumppublications.js)_
 
 ## `ncjs-cli help [COMMAND]`
 
@@ -135,5 +135,5 @@ DESCRIPTION
   This command parses payloads and outputs context in human-readable form.
 ```
 
-_See code: [src/commands/printcontext.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.3/src/commands/printcontext.js)_
+_See code: [src/commands/printcontext.js](https://github.com/VeriBlock/nodecore-js/blob/v1.4.4/src/commands/printcontext.js)_
 <!-- commandsstop -->
