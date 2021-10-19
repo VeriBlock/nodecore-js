@@ -139,9 +139,7 @@ export class PrivateKey {
       this._full = buffer;
     } else if (
       buffer.length === 153 &&
-      buffer
-        .slice(0, NC_PRIVKEY_PREFIX.length)
-        .compare(NC_PRIVKEY_PREFIX) === 0 &&
+      buffer[0] === 0x40 &&
       buffer
         .slice(1, PRIVKEY_ASN1_PREFIX.length + NC_PRIVKEY_PREFIX.length)
         .compare(PRIVKEY_ASN1_PREFIX) === 0
