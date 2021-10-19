@@ -29,6 +29,12 @@ export const PRIVKEY_ASN1_PREFIX = Buffer.from(
   'hex'
 );
 
+// prefix which nodecore adds to the begginning of the string
+export const NC_PRIVKEY_PREFIX = Buffer.from(
+  '40',
+  'hex'
+);
+
 export class PublicKey {
   // stores asn1 encoded public key as [pubkey asn1 prefix + 0x04 + x + y]
   // 88 bytes in total
@@ -131,6 +137,16 @@ export class PrivateKey {
         .compare(PRIVKEY_ASN1_PREFIX) === 0
     ) {
       this._full = buffer;
+    } else if (
+      buffer.length === 153 &&
+      buffer
+        .slice(0, NC_PRIVKEY_PREFIX.length)
+        .compare(NC_PRIVKEY_PREFIX) === 0 &&
+      buffer
+        .slice(1, PRIVKEY_ASN1_PREFIX.length + NC_PRIVKEY_PREFIX.length)
+        .compare(PRIVKEY_ASN1_PREFIX) === 0
+    ) {
+      this._full = buffer.slice(1, PRIVKEY_ASN1_PREFIX.length + NC_PRIVKEY_PREFIX.length + 32);
     } else {
       throw new Error('unknown private key format');
     }
