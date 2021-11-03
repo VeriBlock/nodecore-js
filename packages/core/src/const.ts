@@ -61,3 +61,5 @@ export const MULTISIG_ADDRESS_ID = 0x03;
 
 export const STANDARD_TRANSACTION_ID = 0x01;
 export const MULTISIG_TRANSACTION_ID = 0x03;
+
+export const DEFAULT_TRANSACTION_FEE = 1000;
