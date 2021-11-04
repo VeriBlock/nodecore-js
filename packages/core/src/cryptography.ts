@@ -131,6 +131,14 @@ export class PrivateKey {
         .compare(PRIVKEY_ASN1_PREFIX) === 0
     ) {
       this._full = buffer;
+    } else if (
+      buffer.length === 153 &&
+      buffer[0] === 0x40 &&
+      buffer
+        .slice(1, PRIVKEY_ASN1_PREFIX.length + 1)
+        .compare(PRIVKEY_ASN1_PREFIX) === 0
+    ) {
+      this._full = buffer.slice(1, PRIVKEY_ASN1_PREFIX.length + 1 + 32);
     } else {
       throw new Error('unknown private key format');
     }
