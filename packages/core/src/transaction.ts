@@ -13,7 +13,12 @@ import {
 import { sha256 } from './hash';
 import { KeyPair, SHA256withECDSA } from './cryptography';
 import BigNumber from 'bignumber.js';
-import { signedTransactionT, ThrowReporter, transactionT } from './io';
+import {
+  outputArrayT,
+  signedTransactionT,
+  ThrowReporter,
+  transactionT,
+} from './io';
 import { AddressType, isValidStandardAddress } from './address';
 import {
   Output,
@@ -103,14 +108,19 @@ export const tryDeserializeTransaction = (arg: {}): Transaction => {
 export const trySerializeTransaction = (arg: Transaction): any => {
   return trySerialize(arg, transactionT);
 };
+
+/// transaction outputs
+export const tryDeserializeTransactionOutputs = (arg: {}): Output[] => {
+  return tryDeserialize(arg, outputArrayT);
+};
+export const trySerializeTransactionOutputs = (arg: Output[]): any => {
+  return trySerialize(arg, outputArrayT);
+};
 /*eslint-enable */
 
 export const getTransactionSize = (
   totalOutputAmount: BigNumber,
-  transactionOutputs: Array<{
-    address: string;
-    amount: BigNumber;
-  }>,
+  transactionOutputs: Output[],
   signatureIndex: SignatureIndex,
   extraDataLength: number
 ) => {

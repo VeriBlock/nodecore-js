@@ -102,6 +102,8 @@ export const outputT = t.type({
   amount: amountT,
 });
 
+export const outputArrayT = t.array(outputT);
+
 export const byteT = new t.Type<number, number, unknown>(
   'byte',
   (input: unknown): input is number => typeof input === 'number',
