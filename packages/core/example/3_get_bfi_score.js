@@ -36,7 +36,7 @@ const gettransactions = async (searchLength, addresses) =>
   const defaultSearchLength = 5000; // if transactions is too old this need to be higher. 5000 is enough for recent transaction
 
   //////////////////////////////////////////////////////////////////////
-  //! Query to get tx(s) info
+  //! Query to get tx transaction info
   const result = await gettransactions(defaultSearchLength, [transactionIds]);
 
   if (!result.success){
