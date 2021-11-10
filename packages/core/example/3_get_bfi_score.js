@@ -30,31 +30,28 @@ const gettransactions = async (searchLength, addresses) =>
 // for async/await
 (async () => {
   //////////////////////////////////////////////////////////////////////
-  //! List of TxIds
-  const transactionIds = [
-    '75ADB65B16F9BBD1F61E696527B037B50950DD06789A6686B5A43D0BD7D5D8A6'
-  ];
+  //! TxId to search
+  const transactionIds = '75ADB65B16F9BBD1F61E696527B037B50950DD06789A6686B5A43D0BD7D5D8A6';
 
-  const defaultSearchLength = 5000; // if transactions is too old this need to be higher. 5000 is enough for recent transaction (around 5 minutes)
+  const defaultSearchLength = 5000; // if transactions is too old this need to be higher. 5000 is enough for recent transaction
 
   //////////////////////////////////////////////////////////////////////
   //! Query to get tx(s) info
-  return gettransactions(defaultSearchLength, transactionIds);
-})()
-  .then(getTransactionsReply => {
-    if (getTransactionsReply.success){
+  const result = await gettransactions(defaultSearchLength, [transactionIds]);
 
-      getTransactionsReply.transactions.forEach(transaction => {
-        console.log('----------------------------------------');
-        console.log(`TxID: ${transaction.transaction.txId}`);
-        console.log(`Confirmations: ${transaction.confirmations}`);
-        console.log(`Bitcoin Confirmations: ${transaction.bitcoinConfirmations}`);
-        console.log('----------------------------------------');
-      });
-    } else {
-      console.error("Something wrong happened...");
-      console.log(getTransactionsReply);
-    }
+  if (!result.success){
+    throw Error(result);
+  }
+
+  return result.transactions[0];
+})()
+  .then(result => {
+    console.log(`TxID: ${result.transaction.txId}`);
+    console.log(`Confirmations: ${result.confirmations}`);
+    console.log(`Bitcoin Confirmations: ${result.bitcoinConfirmations}`);
+    console.log('---------------------------------------------------------------------------');
+    console.log('Full Result:');
+    console.log(result);
   })
   .catch(e => {
     if (e.response.status === 500) {
