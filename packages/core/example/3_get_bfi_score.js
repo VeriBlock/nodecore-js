@@ -21,23 +21,23 @@ const sendJsonrpcRequest = async (method, params = {}) => {
   return data.result;
 };
 
-const gettransactions = async (searchLength, addresses) =>
+const gettransaction = async (searchLength, transactionId) =>
   sendJsonrpcRequest('gettransactions', {
     searchLength,
-    ids: addresses,
+    ids: [transactionId],
   });
 
 // for async/await
 (async () => {
   //////////////////////////////////////////////////////////////////////
   //! TxId to search
-  const transactionIds = '75ADB65B16F9BBD1F61E696527B037B50950DD06789A6686B5A43D0BD7D5D8A6';
+  const transactionId = '75ADB65B16F9BBD1F61E696527B037B50950DD06789A6686B5A43D0BD7D5D8A6';
 
   const defaultSearchLength = 5000; // if transactions is too old this need to be higher. 5000 is enough for recent transaction
 
   //////////////////////////////////////////////////////////////////////
   //! Query to get tx transaction info
-  const result = await gettransactions(defaultSearchLength, [transactionIds]);
+  const result = await gettransaction(defaultSearchLength, transactionId);
 
   if (!result.success){
     throw Error(result);
