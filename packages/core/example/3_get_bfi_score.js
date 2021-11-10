@@ -35,7 +35,7 @@ const gettransactions = async (searchLength, addresses) =>
     '75ADB65B16F9BBD1F61E696527B037B50950DD06789A6686B5A43D0BD7D5D8A6'
   ];
 
-  const defaultSearchLength = 5000; // if transactions id too old this need to be higher. 5000 is enough for recent transaction (around 5 minutes)
+  const defaultSearchLength = 5000; // if transactions is too old this need to be higher. 5000 is enough for recent transaction (around 5 minutes)
 
   //////////////////////////////////////////////////////////////////////
   //! Query to get tx(s) info
